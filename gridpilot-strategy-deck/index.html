@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GridPilot — Internal Strategy Discussion Draft</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..500;1,6..72,400..500&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   COBALT GRID — DESIGN TOKENS
+   Two-color risograph editorial system.
+   Change values here to change the whole look.
+   =========================================== */
+:root{
+  --paper:#F0EBDE;
+  --paper-2:#E6E0CE;
+  --ink:#1F2BE0;
+  --ink-soft:#5560E5;
+  --grid:rgba(31,43,224,0.10);
+  --ink-faint:rgba(31,43,224,0.18);
+  --ink-faint-2:rgba(31,43,224,0.30);
+
+  --f-display:'Newsreader', Georgia, serif;
+  --f-body:'Hanken Grotesk', sans-serif;
+  --f-mono:'DM Mono', ui-monospace, monospace;
+
+  --edge:64px;
+  --edge-inner:120px;
+  --pad-top:128px;
+  --pad-bottom:150px;
+  --gap-lg:48px;
+  --gap-md:32px;
+  --gap-sm:20px;
+  --gap-xs:12px;
+
+  --stage-bg: var(--paper);
+  --slide-bg: var(--paper);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-normal: 0.6s;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--paper);}
+
+/* --- viewport-base.css (mandatory fixed-stage rules) --- */
+html, body { width:100%; height:100%; margin:0; overflow:hidden; background:var(--stage-bg,#000); }
+.deck-viewport { position:fixed; inset:0; overflow:hidden; background:var(--stage-bg,#000); }
+.deck-stage { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:hidden; transform-origin:0 0; background:var(--slide-bg,#fff); }
+.slide { position:absolute; inset:0; width:1920px; height:1080px; overflow:hidden; display:block; visibility:hidden; opacity:0; pointer-events:none; background:var(--slide-bg,#fff); }
+.slide.active, .slide.visible { visibility:visible; opacity:1; pointer-events:auto; z-index:1; }
+img, video, canvas, svg { max-width:100%; max-height:100%; }
+.deck-controls { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:1000; }
+@media print {
+  html, body { width:1920px; height:auto; overflow:visible; background:#fff; }
+  .deck-viewport { position:static; overflow:visible; background:#fff; }
+  .deck-stage { position:static; width:auto; height:auto; transform:none !important; background:none; }
+  .slide { position:relative; display:block !important; visibility:visible !important; opacity:1 !important; pointer-events:auto !important; width:1920px; height:1080px; break-after:page; page-break-after:always; }
+  .slide:last-child { break-after:auto; page-break-after:auto; }
+  .deck-controls { display:none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.2s !important; }
+}
+/* --- end viewport-base.css --- */
+
+/* ===========================================
+   BASE SLIDE SURFACE — permanent graph-paper grid
+   =========================================== */
+.slide{
+  font-family:var(--f-body);
+  color:var(--ink);
+  background:
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px),
+    var(--paper);
+  background-size:36px 36px, 36px 36px, 100% 100%;
+}
+
+/* ===========================================
+   CHROME: hairlines, page number, brand hint
+   =========================================== */
+.hairline-top, .hairline-bottom{
+  position:absolute;
+  left:var(--edge); right:var(--edge);
+  height:1.5px;
+  background:var(--ink);
+}
+.hairline-top{ top:56px; }
+.hairline-bottom{ bottom:40px; }
+.pagenum{
+  position:absolute;
+  right:var(--edge);
+  bottom:72px;
+  font-family:var(--f-mono);
+  font-size:13px;
+  letter-spacing:0.06em;
+  color:var(--ink);
+}
+.brandmark{
+  position:absolute;
+  left:var(--edge);
+  bottom:72px;
+  font-family:var(--f-mono);
+  font-size:12px;
+  letter-spacing:0.08em;
+  color:var(--ink);
+  opacity:0.55;
+  text-transform:uppercase;
+}
+.frame{
+  position:absolute;
+  top:var(--pad-top); left:var(--edge); right:var(--edge); bottom:var(--pad-bottom);
+  display:flex; flex-direction:column;
+}
+.fill{ flex:1 1 auto; min-height:0; }
+
+/* ===========================================
+   TYPE SCALE (fixed px at 1920x1080 stage)
+   =========================================== */
+.t-display-hero{ font-family:var(--f-display); font-size:172px; font-weight:400; line-height:0.92; letter-spacing:-0.008em; }
+.t-display-closing{ font-family:var(--f-display); font-size:150px; font-weight:400; line-height:0.96; letter-spacing:-0.005em; }
+.t-display-chapter{ font-family:var(--f-display); font-size:112px; font-weight:400; line-height:1; letter-spacing:-0.005em; }
+.t-display-quote{ font-family:var(--f-display); font-size:96px; font-weight:400; line-height:1.06; letter-spacing:-0.005em; }
+.t-headline-index{ font-family:var(--f-display); font-size:88px; font-weight:400; line-height:1.02; }
+.t-headline{ font-family:var(--f-display); font-size:72px; font-weight:400; line-height:1.05; }
+.t-ed-callout{ font-family:var(--f-display); font-size:42px; font-weight:400; line-height:1.25; }
+.t-row-headline{ font-family:var(--f-display); font-size:34px; font-weight:400; line-height:1.15; }
+.t-table-name{ font-family:var(--f-display); font-size:26px; font-weight:400; line-height:1.2; }
+.t-micro{ font-family:var(--f-body); font-size:14px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; }
+.t-micro-strong{ font-family:var(--f-body); font-size:16px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; }
+.t-micro-sm{ font-family:var(--f-body); font-size:12px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; }
+.t-body{ font-family:var(--f-body); font-size:18px; font-weight:400; line-height:1.5; }
+.t-body-lede{ font-family:var(--f-body); font-size:22px; font-weight:400; line-height:1.5; }
+.t-body-stat{ font-family:var(--f-body); font-size:19px; font-weight:400; line-height:1.5; }
+.t-mono-tag{ font-family:var(--f-mono); font-size:15px; letter-spacing:0.04em; }
+.t-mono-chrome{ font-family:var(--f-mono); font-size:12px; letter-spacing:0.06em; }
+.t-mono-tick{ font-family:var(--f-mono); font-size:13px; letter-spacing:0.04em; }
+
+.no-em{ font-style:normal; }
+
+/* ===========================================
+   COMPONENTS
+   =========================================== */
+
+/* Topbar: headline left, mono lab-tag right, 1.5px rule beneath */
+.topbar{
+  flex:0 0 auto;
+  display:flex; align-items:baseline; justify-content:space-between;
+  border-bottom:1.5px solid var(--ink);
+  padding-bottom:22px;
+  margin-bottom:var(--gap-lg);
+}
+.topbar .kicker{ display:block; margin-bottom:10px; }
+
+/* Index list: num-tag + row headline + body copy, faint dividers */
+.index-list{ display:flex; flex-direction:column; }
+.index-row{
+  display:grid;
+  grid-template-columns:76px 1fr;
+  gap:28px;
+  padding:22px 0;
+  border-bottom:1px solid var(--ink-faint);
+  align-items:start;
+}
+.index-row:last-child{ border-bottom:none; }
+.index-row .num{ font-family:var(--f-mono); font-size:16px; letter-spacing:0.04em; padding-top:6px; }
+.index-row .rowhead{ margin-bottom:6px; }
+
+/* Simple compact list: num-tag + single-line item (denser, used for 6-8 point lists) */
+.simple-list{ display:flex; flex-direction:column; }
+.simple-row{
+  display:grid;
+  grid-template-columns:56px 1fr;
+  gap:24px;
+  padding:16px 0;
+  border-bottom:1px solid var(--ink-faint);
+  align-items:baseline;
+}
+.simple-row:last-child{ border-bottom:none; }
+.simple-row .num{ font-family:var(--f-mono); font-size:14px; }
+.simple-row .item{ font-family:var(--f-body); font-size:21px; line-height:1.4; }
+.simple-list.compact .simple-row{ padding:10px 0; }
+.simple-list.compact .simple-row .item{ font-size:19px; }
+
+/* Callout: statement block with top rule */
+.callout{
+  border-top:1.5px solid var(--ink);
+  padding-top:26px;
+  margin-top:var(--gap-md);
+}
+.callout .label{ display:block; margin-bottom:12px; }
+.callout p{ font-family:var(--f-display); font-size:38px; font-style:italic; line-height:1.3; max-width:1500px; }
+
+/* Tag chip: small bordered mono/label pill (rectangular, no radius) */
+.chip{
+  display:inline-flex; align-items:center;
+  border:1px solid var(--ink);
+  padding:8px 14px;
+  font-family:var(--f-mono); font-size:13px; letter-spacing:0.05em;
+}
+
+/* Flag: hypothesis / illustrative / unvalidated labels */
+.flag{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--f-mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink);
+  border:1px solid var(--ink);
+  padding:7px 12px 6px;
+}
+.flag::before{ content:"◆"; font-size:9px; }
+
+/* Two column split */
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gap-lg); height:100%; }
+.split > div{ display:flex; flex-direction:column; }
+.split-divider{ border-left:1.5px solid var(--ink); }
+
+/* Workflow row: nodes connected by arrows */
+.workflow-row{ display:flex; align-items:stretch; gap:0; }
+.wf-node{
+  flex:1;
+  border:1.5px solid var(--ink);
+  padding:24px 18px;
+  display:flex; flex-direction:column; gap:10px; justify-content:center;
+  min-height:150px;
+  background:var(--paper);
+}
+.wf-node .n{ font-family:var(--f-mono); font-size:13px; opacity:0.65; }
+.wf-node .label{ font-family:var(--f-display); font-size:30px; line-height:1.1; }
+.wf-arrow{
+  display:flex; align-items:center; justify-content:center;
+  width:52px; flex-shrink:0;
+  font-family:var(--f-mono); font-size:22px;
+}
+
+/* Example lane below workflow */
+.example-lane{
+  margin-top:var(--gap-lg);
+  border-top:1px solid var(--ink-faint);
+  padding-top:var(--gap-md);
+}
+.example-chain{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:16px; }
+.example-chain .step{ font-family:var(--f-mono); font-size:16px; }
+.example-chain .arrow{ opacity:0.5; font-family:var(--f-mono); font-size:16px; }
+
+/* Ledger table */
+.ledger{ display:flex; flex-direction:column; }
+.ledger-head{
+  display:grid; grid-template-columns:64px 1.1fr 2fr;
+  gap:24px; border-bottom:1.5px solid var(--ink); padding-bottom:14px; margin-bottom:6px;
+}
+.ledger-row{
+  display:grid; grid-template-columns:64px 1.1fr 2fr;
+  gap:24px; padding:18px 0; border-bottom:1px solid var(--ink-faint); align-items:start;
+}
+.ledger-row:last-child{ border-bottom:none; }
+.ledger-row .num{ font-family:var(--f-mono); font-size:14px; padding-top:4px; }
+
+/* Card grid (4 cards) */
+.card-grid{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:1.5px; background:var(--ink); height:100%; }
+.card{
+  background:var(--paper); padding:34px 36px; display:flex; flex-direction:column; gap:12px;
+}
+.card .idx{ font-family:var(--f-mono); font-size:14px; opacity:0.6; }
+.card h4{ font-family:var(--f-display); font-weight:400; font-size:32px; line-height:1.1; }
+.card p{ font-family:var(--f-body); font-size:16px; line-height:1.45; }
+
+/* Layer stack (architecture) */
+.layer-stack{ display:flex; flex-direction:column; gap:1.5px; height:100%; background:var(--ink); }
+.layer{
+  background:var(--paper); flex:1; display:flex; align-items:center; padding:0 40px; gap:28px;
+}
+.layer .lyr-num{ font-family:var(--f-mono); font-size:14px; width:34px; flex-shrink:0; }
+.layer .lyr-name{ font-family:var(--f-display); font-size:30px; width:420px; flex-shrink:0; }
+.layer .lyr-tags{ display:flex; flex-wrap:wrap; gap:8px; }
+
+/* Ladder (autonomy levels) */
+.ladder{ display:flex; flex-direction:column-reverse; gap:12px; height:100%; }
+.rung{ display:flex; align-items:center; gap:0; border:1.5px solid var(--ink); }
+.rung .rung-tag{ font-family:var(--f-mono); font-size:14px; padding:0 22px; border-right:1px solid var(--ink); height:100%; display:flex; align-items:center; }
+.rung .rung-label{ font-family:var(--f-display); font-size:26px; padding:0 26px; display:flex; align-items:center; flex:1; height:76px; }
+.rung.boundary{ border-color:var(--ink); }
+.boundary-line{ border-top:1.5px dashed var(--ink); position:relative; margin:2px 0; }
+.boundary-line .btag{ position:absolute; right:0; top:-11px; background:var(--paper); padding:0 10px; font-family:var(--f-mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; }
+
+/* Staircase (GTM) */
+.staircase{ display:flex; align-items:flex-end; gap:14px; height:100%; }
+.stair{ flex:1; border:1.5px solid var(--ink); display:flex; flex-direction:column; justify-content:flex-end; padding:20px 20px 22px; background:var(--paper); }
+.stair .st-n{ font-family:var(--f-mono); font-size:13px; margin-bottom:10px; opacity:0.65; }
+.stair .st-label{ font-family:var(--f-display); font-size:24px; line-height:1.15; }
+
+/* QR block */
+.qr-block{ display:grid; grid-template-columns:repeat(8,1fr); grid-template-rows:repeat(8,1fr); gap:1.5px; background:var(--paper); padding:4px; box-shadow:0 0 0 1.5px var(--paper); width:88px; height:88px; }
+.qr-cell{ background:var(--grid); }
+.qr-cell.on{ background:var(--ink); }
+
+/* Pixel glitch column (inline SVG wrapper) */
+.pixel-glitch{ position:absolute; top:0; bottom:0; pointer-events:none; z-index:3; }
+.pixel-glitch.right{ right:0; }
+.pixel-glitch.left{ left:0; }
+
+/* Vertical stack label */
+.vstack-label{ position:absolute; right:26px; top:50%; transform:translateY(-50%); writing-mode:vertical-rl; text-orientation:mixed; font-family:var(--f-mono); font-size:12px; letter-spacing:0.08em; color:var(--ink); opacity:0.55; }
+
+/* Attribution rule */
+.attribution{ border-top:1px solid var(--ink); padding-top:18px; display:flex; gap:24px; align-items:baseline; }
+
+/* Topology diagram (cover) */
+.topology{ position:relative; width:100%; height:100%; }
+.topo-node{ position:absolute; border:1.5px solid var(--ink); background:var(--paper); padding:12px 18px; font-family:var(--f-mono); font-size:13px; letter-spacing:0.05em; }
+.topo-node.core{ padding:22px 30px; font-family:var(--f-display); font-size:26px; font-style:italic; }
+
+/* Reveal animation */
+.reveal{ opacity:0; transform:translateY(24px); transition:opacity var(--duration-normal) var(--ease-out-expo), transform var(--duration-normal) var(--ease-out-expo); }
+.slide.visible .reveal{ opacity:1; transform:translateY(0); }
+.reveal:nth-child(1){ transition-delay:0.05s; }
+.reveal:nth-child(2){ transition-delay:0.12s; }
+.reveal:nth-child(3){ transition-delay:0.19s; }
+.reveal:nth-child(4){ transition-delay:0.26s; }
+.reveal:nth-child(5){ transition-delay:0.33s; }
+
+/* ===========================================
+   NOTES PANEL (speaker notes, hidden by default)
+   =========================================== */
+.notes-panel{
+  position:fixed; left:0; right:0; bottom:0;
+  max-height:38vh; overflow:auto;
+  background:var(--ink); color:var(--paper);
+  font-family:var(--f-body); font-size:16px; line-height:1.55;
+  padding:26px 48px;
+  transform:translateY(100%);
+  transition:transform 0.3s var(--ease-out-expo);
+  z-index:5000;
+}
+.notes-panel.show{ transform:translateY(0); }
+.notes-panel .nk{ font-family:var(--f-mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; opacity:0.7; margin-bottom:10px; }
+.notes-panel strong{ font-weight:600; }
+
+/* ===========================================
+   DECK CONTROLS (outside stage design system)
+   =========================================== */
+.deck-controls{
+  display:flex; gap:10px; align-items:center;
+  background:rgba(31,43,224,0.92); color:var(--paper);
+  padding:8px 14px; font-family:var(--f-mono); font-size:12px; letter-spacing:0.05em;
+}
+.deck-controls button{
+  background:transparent; border:1px solid var(--paper); color:var(--paper);
+  font-family:var(--f-mono); font-size:12px; padding:6px 10px; cursor:pointer;
+}
+.deck-controls button:hover{ background:var(--paper); color:var(--ink); }
+.deck-controls .sep{ opacity:0.4; }
+
+/* Edit affordance (hidden hotzone, minimal) */
+.edit-hotzone{ position:fixed; top:0; left:0; width:80px; height:80px; z-index:10000; cursor:pointer; }
+.edit-toggle{
+  position:fixed; top:14px; left:14px; z-index:10001;
+  background:var(--ink); color:var(--paper); border:1px solid var(--paper);
+  font-family:var(--f-mono); font-size:16px; width:38px; height:38px;
+  opacity:0; pointer-events:none; transition:opacity 0.3s ease; cursor:pointer;
+}
+.edit-toggle.show, .edit-toggle.active{ opacity:1; pointer-events:auto; }
+[contenteditable="true"]{ outline:1px dashed var(--ink-soft); outline-offset:4px; }
+</style>
+</head>
+<body>
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+<!-- =========================================================
+     SLIDE 01 — COVER
+     ========================================================= -->
+<section class="slide active" data-notes="Main argument: GridPilot is positioning itself as the operations layer for distributed clean-energy infrastructure, not a monitoring dashboard. Evidence/assumption: this is a thesis statement, not yet validated by paying customers — treat the room's reaction as primary data. Discussion question: does 'operations layer' land as a distinct category to this audience, or does it sound like another monitoring tool? Transition: next slide grounds the thesis in the operating problem operators actually face today.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="pixel-glitch right" aria-hidden="true">
+    <svg width="380" height="1080" viewBox="0 0 380 1080" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="scan1" width="10" height="10" patternUnits="userSpaceOnUse"><line x1="2" y1="0" x2="2" y2="10" stroke="#1F2BE0" stroke-width="1.4" opacity="0.55"/></pattern>
+      </defs>
+      <rect x="260" y="0" width="120" height="1080" fill="url(#scan1)"/>
+      <rect x="150" y="180" width="110" height="720" fill="url(#scan1)" opacity="0.75"/>
+      <rect x="60" y="380" width="90" height="320" fill="url(#scan1)" opacity="0.5"/>
+    </svg>
+  </div>
+
+  <div class="frame">
+    <div class="reveal t-micro" style="margin-bottom:34px;">Internal discussion draft</div>
+    <h1 class="reveal t-display-hero" style="margin-bottom:8px;">GridPilot</h1>
+    <p class="reveal t-ed-callout" style="max-width:1200px; margin-bottom:44px;">The autonomous operations layer for distributed energy infrastructure</p>
+    <p class="reveal t-body-lede" style="max-width:900px; opacity:0.85;">Starting with charger uptime. Expanding into solar, storage and site-energy operations.</p>
+
+    <!-- Asset topology diagram -->
+    <div class="reveal" style="position:absolute; right:60px; bottom:0; width:760px; height:520px;">
+      <div class="topology">
+        <div class="topo-node" style="left:20px; top:40px;">CHARGER · SITE 04</div>
+        <div class="topo-node" style="left:0px; top:220px;">CHARGER · SITE 11</div>
+        <div class="topo-node" style="left:40px; top:400px;">SOLAR INVERTER</div>
+        <div class="topo-node" style="left:520px; top:30px;">BESS RACK</div>
+        <div class="topo-node" style="left:560px; top:210px;">SITE GATEWAY</div>
+        <div class="topo-node" style="left:530px; top:400px;">SOLAR INVERTER</div>
+        <div class="topo-node core" style="left:250px; top:210px;">GridPilot</div>
+        <svg style="position:absolute; inset:0; z-index:-1;" width="760" height="520">
+          <line x1="150" y1="70" x2="320" y2="235" stroke="#1F2BE0" stroke-width="1.5"/>
+          <line x1="90" y1="245" x2="320" y2="245" stroke="#1F2BE0" stroke-width="1.5"/>
+          <line x1="140" y1="425" x2="330" y2="270" stroke="#1F2BE0" stroke-width="1.5"/>
+          <line x1="600" y1="60" x2="400" y2="235" stroke="#1F2BE0" stroke-width="1.5"/>
+          <line x1="620" y1="235" x2="410" y2="245" stroke="#1F2BE0" stroke-width="1.5"/>
+          <line x1="600" y1="425" x2="400" y2="270" stroke="#1F2BE0" stroke-width="1.5"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot — From alert to resolution</div>
+  <div class="pagenum">01 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 02 — OPERATING PROBLEM
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: the operating gap is structural — assets outrun the humans coordinating them, across sites, OEMs and platforms. Evidence/assumption: drawn from general industry pattern-matching, not GridPilot-specific research yet; ask the room to confirm or correct. Discussion question: which of these six frictions is most costly in your operation today? Transition: next slide sharpens this into what current monitoring tools do and don't do.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Operating problem</span>
+        <h2 class="t-headline">Clean-energy assets are growing faster than operations teams can manage them</h2>
+      </div>
+      <span class="t-mono-tag">02 — CONTEXT</span>
+    </div>
+
+    <div class="split fill" style="grid-template-columns:1.3fr 0.9fr;">
+      <div class="reveal simple-list">
+        <div class="simple-row"><span class="num">01</span><span class="item">Assets are distributed across many sites.</span></div>
+        <div class="simple-row"><span class="num">02</span><span class="item">Equipment comes from multiple OEMs.</span></div>
+        <div class="simple-row"><span class="num">03</span><span class="item">Telemetry sits in separate platforms.</span></div>
+        <div class="simple-row"><span class="num">04</span><span class="item">Operators receive alerts without a complete diagnosis.</span></div>
+        <div class="simple-row"><span class="num">05</span><span class="item">Resolution depends on manual coordination.</span></div>
+        <div class="simple-row"><span class="num">06</span><span class="item">Operational knowledge is lost across tickets and technicians.</span></div>
+      </div>
+      <div class="reveal" style="display:flex; align-items:flex-end;">
+        <div class="callout" style="width:100%;">
+          <span class="t-micro label">Key statement</span>
+          <p>The problem is not only visibility. It is the gap between an alert and a verified resolution.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">02 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 03 — CURRENT SYSTEM LIMIT
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: dashboards answer 'what happened' but leave the entire execution chain — correlate, diagnose, approve, act, verify, dispatch, document — to people. Evidence/assumption: this split is a generalization about the category; the room's own tool stack may already automate parts of the right column, which is exactly the kind of correction we want. Discussion question: how much of the right-hand list is already automated in your operation, and where does it break down? Transition: this gap is exactly what GridPilot's workflow is designed to close — next slide.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Current system limit</span>
+        <h2 class="t-headline">Monitoring systems tell us what happened</h2>
+      </div>
+      <span class="t-mono-tag">03 — CONTEXT</span>
+    </div>
+    <div class="split fill">
+      <div class="reveal">
+        <span class="t-micro-strong" style="display:block; margin-bottom:20px;">Current tools provide</span>
+        <div class="simple-list">
+          <div class="simple-row"><span class="num">·</span><span class="item">Telemetry</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Dashboards</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Alarms</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Historical charts</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Basic commands</span></div>
+        </div>
+      </div>
+      <div class="reveal split-divider" style="padding-left:var(--gap-lg);">
+        <span class="t-micro-strong" style="display:block; margin-bottom:20px;">People still have to</span>
+        <div class="simple-list">
+          <div class="simple-row"><span class="num">·</span><span class="item">Correlate events</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Diagnose cause</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Select response</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Obtain approval</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Execute actions</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Verify recovery</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Dispatch technicians</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Document resolution</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">03 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 04 — PRODUCT THESIS
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: GridPilot's core thesis is to convert operational events into completed, verified workflows rather than just surfacing better alerts. Evidence/assumption: this is the product thesis — a hypothesis to be pressure-tested, not a shipped capability across all eight stages today. Discussion question: which stage of this workflow is hardest to trust an automated system with, in your experience? Transition: we chose EV charging as the place to prove this loop first — next slide explains why.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Product thesis</span>
+        <h2 class="t-headline">GridPilot turns operational events into completed workflows</h2>
+      </div>
+      <span class="flag">Hypothesis</span>
+    </div>
+
+    <div class="reveal workflow-row" style="margin-top:56px;">
+      <div class="wf-node"><span class="n">01</span><span class="label">Detect</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">02</span><span class="label">Contextualize</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">03</span><span class="label">Diagnose</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">04</span><span class="label">Decide</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">05</span><span class="label">Execute</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">06</span><span class="label">Verify</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">07</span><span class="label">Escalate</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">08</span><span class="label">Learn</span></div>
+    </div>
+
+    <div class="reveal callout" style="margin-top:auto;">
+      <p class="no-em" style="font-style:italic;">From alert to resolution.</p>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">04 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 05 — WHY START WITH EV CHARGING
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: charging is chosen deliberately as a narrow wedge — high incident frequency, direct revenue impact, remote connectivity via OCPP, and repeatable recovery patterns make it tractable to prove the loop end-to-end. Evidence/assumption: OCPP prevalence and remote connectivity are general category characteristics, not confirmed for every operator in the room. Discussion question: does charger uptime match this description in your network, or are there OEM/protocol gaps we're underestimating? Transition: next slide walks through the actual ChargeOps incident-resolution loop.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Market entry</span>
+        <h2 class="t-headline">Charger uptime is a focused, measurable starting point</h2>
+      </div>
+      <span class="t-mono-tag">05 — WEDGE</span>
+    </div>
+    <div class="split fill" style="grid-template-columns:1.2fr 1fr;">
+      <div class="reveal simple-list">
+        <div class="simple-row"><span class="num">01</span><span class="item">Frequent operational incidents</span></div>
+        <div class="simple-row"><span class="num">02</span><span class="item">Direct revenue and service impact</span></div>
+        <div class="simple-row"><span class="num">03</span><span class="item">Remote connectivity</span></div>
+        <div class="simple-row"><span class="num">04</span><span class="item">OCPP foundations</span></div>
+        <div class="simple-row"><span class="num">05</span><span class="item">Repetitive recovery workflows</span></div>
+        <div class="simple-row"><span class="num">06</span><span class="item">Clear availability metrics</span></div>
+        <div class="simple-row"><span class="num">07</span><span class="item">Existing field-service expenditure</span></div>
+      </div>
+      <div class="reveal" style="display:flex; align-items:flex-end;">
+        <div class="callout" style="width:100%;">
+          <span class="t-micro label">Product statement</span>
+          <p>Diagnose charger incidents, execute approved remote recovery, and dispatch technicians only when required.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">05 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 06 — CHARGEOPS WORKFLOW
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: the ChargeOps loop is the concrete, working expression of the product thesis — a closed loop from event to verified closure with escalation as a first-class exit. Evidence/assumption: the example below is illustrative of the intended workflow shape, not a captured production incident. Discussion question: for a comms failure like this, where would your current process diverge from this loop, and where would you insist on a human in the loop? Transition: the same loop structure is what we believe transfers to solar and BESS operations — next slide.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">ChargeOps</span>
+        <h2 class="t-headline">An autonomous incident-resolution loop</h2>
+      </div>
+      <span class="t-mono-tag">06 — WORKFLOW</span>
+    </div>
+
+    <div class="reveal workflow-row" style="margin-top:40px;">
+      <div class="wf-node"><span class="n">01</span><span class="label">Event</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">02</span><span class="label">Context</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">03</span><span class="label">Diagnosis</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">04</span><span class="label">Decision</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">05</span><span class="label">Action</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">06</span><span class="label">Verification</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node"><span class="n">07</span><span class="label">Escalation</span></div>
+    </div>
+
+    <div class="reveal example-lane">
+      <span class="flag">Illustrative example</span>
+      <div class="example-chain">
+        <span class="step">Charger communication failure</span><span class="arrow">→</span>
+        <span class="step">site &amp; asset correlation</span><span class="arrow">→</span>
+        <span class="step">gateway issue identified</span><span class="arrow">→</span>
+        <span class="step">approved reconnect workflow</span><span class="arrow">→</span>
+        <span class="step">status verified</span><span class="arrow">→</span>
+        <span class="step">incident closed</span>
+      </div>
+    </div>
+
+    <div class="reveal callout" style="margin-top:auto;">
+      <span class="t-micro label">Every stage is logged</span>
+      <p style="font-size:30px;">Escalation is a first-class outcome, not a failure state — every loop closes with either a verified resolution or a clean handoff to a technician, with full context attached.</p>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">06 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 07 — SOLAR RELEVANCE
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: the same detect-diagnose-resolve gap that shows up in charging also shows up in solar and BESS operations — fragmented OEM tooling, alarms without context, reactive maintenance. Evidence/assumption: this list is pattern-matched from the sector's known operating characteristics, not from GridPilot's own field data yet — this is precisely what we want the room to validate or correct. Discussion question: which of these eight frictions is most familiar, and which doesn't match your experience? Transition: next slide gets concrete about what GridPilot could orchestrate for solar operators specifically.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Solar &amp; BESS relevance</span>
+        <h2 class="t-headline">The same operating gap exists in solar and BESS</h2>
+      </div>
+      <span class="t-mono-tag">07 — RELEVANCE</span>
+    </div>
+    <div class="split fill" style="grid-template-columns:1.3fr 0.9fr;">
+      <div class="reveal simple-list">
+        <div class="simple-row"><span class="num">01</span><span class="item">Inverter alarms without sufficient context</span></div>
+        <div class="simple-row"><span class="num">02</span><span class="item">String or tracker underperformance</span></div>
+        <div class="simple-row"><span class="num">03</span><span class="item">Repeated communication failures</span></div>
+        <div class="simple-row"><span class="num">04</span><span class="item">Cooling and power-electronics degradation</span></div>
+        <div class="simple-row"><span class="num">05</span><span class="item">Multi-OEM fragmentation</span></div>
+        <div class="simple-row"><span class="num">06</span><span class="item">Reactive maintenance</span></div>
+        <div class="simple-row"><span class="num">07</span><span class="item">Incomplete technician handoff</span></div>
+        <div class="simple-row"><span class="num">08</span><span class="item">Lost generation during delayed diagnosis</span></div>
+      </div>
+      <div class="reveal" style="display:flex; align-items:flex-end;">
+        <div class="callout" style="width:100%;">
+          <span class="t-micro label">Key message</span>
+          <p>A reusable operations layer can understand assets, incidents, playbooks, approvals, technicians and outcomes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">07 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 08 — SOLAROPS USE CASES
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: four illustrative orchestration use cases show how the same detect-diagnose-resolve loop could apply to solar operations. Evidence/assumption: SolarOps is a future product concept — none of this is built or piloted yet; the four cards are directional, not a committed roadmap. Discussion question: which of these four would deliver the most operational value first, and which inputs listed are actually available to you today? Transition: BESS raises the stakes on safety — next slide covers storage-specific boundaries.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">SolarOps</span>
+        <h2 class="t-headline">What GridPilot could orchestrate for solar operators</h2>
+      </div>
+      <span class="flag">Future product concept</span>
+    </div>
+
+    <div class="split fill" style="grid-template-columns:1.6fr 0.85fr; margin-top:8px;">
+      <div class="reveal" style="height:100%;">
+        <div class="card-grid">
+          <div class="card"><span class="idx">01</span><h4>Performance-loss triage</h4><p>Correlate underperformance against irradiance and known asset condition before dispatching anyone.</p></div>
+          <div class="card"><span class="idx">02</span><h4>Inverter fault recovery</h4><p>Diagnose fault codes across OEMs and execute approved reset or reconfiguration workflows.</p></div>
+          <div class="card"><span class="idx">03</span><h4>Communication recovery</h4><p>Detect and resolve gateway or telemetry dropouts before they become blind spots.</p></div>
+          <div class="card"><span class="idx">04</span><h4>Technician orchestration</h4><p>Dispatch only when remote resolution is exhausted, with full diagnostic context attached.</p></div>
+        </div>
+      </div>
+      <div class="reveal" style="padding-left:var(--gap-lg); display:flex; flex-direction:column;">
+        <span class="t-micro-strong" style="margin-bottom:18px;">Inputs</span>
+        <div class="simple-list">
+          <div class="simple-row"><span class="num">·</span><span class="item">Inverter data</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Irradiance</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Weather</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Grid availability</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Cleaning history</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Historical incidents</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">08 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 09 — STORAGEOPS USE CASES
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: BESS intelligence must sit strictly above deterministic protection systems — AI assists diagnosis and optimization, but never substitutes for hard-wired safety logic. Evidence/assumption: StorageOps is a future product concept, unbuilt; the eight items are candidate problem areas drawn from known BESS operating concerns, not a validated backlog. Discussion question: where exactly should the line sit between advisory intelligence and protection-system authority in your installations? Transition: this safety boundary generalizes into a broader autonomy framework — next slide.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">StorageOps</span>
+        <h2 class="t-headline">BESS requires intelligence with stronger safety boundaries</h2>
+      </div>
+      <span class="flag">Future product concept</span>
+    </div>
+    <div class="split fill" style="grid-template-columns:1.3fr 0.9fr;">
+      <div class="reveal simple-list">
+        <div class="simple-row"><span class="num">01</span><span class="item">Cell and rack health</span></div>
+        <div class="simple-row"><span class="num">02</span><span class="item">Temperature divergence</span></div>
+        <div class="simple-row"><span class="num">03</span><span class="item">Voltage imbalance</span></div>
+        <div class="simple-row"><span class="num">04</span><span class="item">Cooling degradation</span></div>
+        <div class="simple-row"><span class="num">05</span><span class="item">PCS diagnosis</span></div>
+        <div class="simple-row"><span class="num">06</span><span class="item">Dispatch anomalies</span></div>
+        <div class="simple-row"><span class="num">07</span><span class="item">Warranty tracking</span></div>
+        <div class="simple-row"><span class="num">08</span><span class="item">Operator-approved recovery</span></div>
+      </div>
+      <div class="reveal" style="display:flex; align-items:flex-end;">
+        <div class="callout" style="width:100%;">
+          <span class="t-micro label">Key principle</span>
+          <p>AI assists diagnosis and optimization. Protection systems remain deterministic.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">09 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 10 — ARCHITECTURE
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: the architecture is deliberately vendor-neutral and layered, so protocol diversity at the bottom doesn't leak into the operator experience at the top, and every action is policy-bound and audited. Evidence/assumption: this is an architectural hypothesis describing intended structure, not a description of a fully implemented system. Discussion question: which layer looks hardest to get right given the OEM and protocol mix you actually operate? Transition: the policy and trust layer is where autonomy limits live — next slide makes those limits explicit.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Architecture</span>
+        <h2 class="t-headline">Vendor-neutral, edge-aware and policy-bound</h2>
+      </div>
+      <span class="flag">Architecture hypothesis</span>
+    </div>
+    <div class="reveal fill">
+      <div class="layer-stack">
+        <div class="layer">
+          <span class="lyr-num">05</span><span class="lyr-name">Operator experience</span>
+          <div class="lyr-tags"><span class="chip">Console</span><span class="chip">Approvals UI</span><span class="chip">Notifications</span></div>
+        </div>
+        <div class="layer">
+          <span class="lyr-num">04</span><span class="lyr-name">Trust &amp; policy layer</span>
+          <div class="lyr-tags"><span class="chip">Policy engine</span><span class="chip">Approvals</span><span class="chip">Audit</span></div>
+        </div>
+        <div class="layer">
+          <span class="lyr-num">03</span><span class="lyr-name">Intelligence layer</span>
+          <div class="lyr-tags"><span class="chip">Agents</span><span class="chip">Diagnosis models</span><span class="chip">Playbooks</span></div>
+        </div>
+        <div class="layer">
+          <span class="lyr-num">02</span><span class="lyr-name">Canonical operations layer</span>
+          <div class="lyr-tags"><span class="chip">Asset graph</span><span class="chip">Event bus</span></div>
+        </div>
+        <div class="layer">
+          <span class="lyr-num">01</span><span class="lyr-name">Assets &amp; protocols</span>
+          <div class="lyr-tags"><span class="chip">OCPP</span><span class="chip">Modbus</span><span class="chip">APIs</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">10 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 11 — BOUNDED AUTONOMY
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: autonomy is a ladder that must be earned level by level through demonstrated reliability, with a hard boundary around safety-critical and statutory actions that stays outside automated scope regardless of maturity. Evidence/assumption: this is a design principle GridPilot commits to, not a claim about current capability — most deployments would start at level 0 or 1. Discussion question: which of the five levels would your organization require before trusting any remote action on your assets? Transition: next slide connects this operating model to the commercial model — how this gets monetized.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Bounded autonomy</span>
+        <h2 class="t-headline">Autonomy must be earned, not assumed</h2>
+      </div>
+      <span class="t-mono-tag">11 — PRINCIPLE</span>
+    </div>
+    <div class="split fill" style="grid-template-columns:1.1fr 0.9fr; margin-top:12px;">
+      <div class="reveal">
+        <div class="ladder">
+          <div class="rung"><span class="rung-tag">L0</span><span class="rung-label">Observe</span></div>
+          <div class="rung"><span class="rung-tag">L1</span><span class="rung-label">Diagnose</span></div>
+          <div class="rung"><span class="rung-tag">L2</span><span class="rung-label">Recommend</span></div>
+          <div class="rung"><span class="rung-tag">L3</span><span class="rung-label">Approve &amp; execute</span></div>
+          <div class="boundary-line"><span class="btag">Autonomous boundary</span></div>
+          <div class="rung"><span class="rung-tag">L4</span><span class="rung-label">Bounded autonomy</span></div>
+        </div>
+      </div>
+      <div class="reveal" style="padding-left:var(--gap-lg); display:flex; flex-direction:column;">
+        <span class="t-micro-strong" style="margin-bottom:18px;">Outside the autonomous boundary</span>
+        <div class="simple-list">
+          <div class="simple-row"><span class="num">·</span><span class="item">Protection logic</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">High-voltage switching</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Grid synchronization</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Statutory dispatch actions</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Safety-critical re-energization</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">11 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 12 — BUSINESS MODEL
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: the intended model is recurring software revenue explicitly tied to measurable operational outcomes, not just seats or data volume. Evidence/assumption: every line item on this slide is an illustrative, unvalidated structure — no pricing has been tested with customers and no revenue exists yet. Discussion question: which of these revenue mechanisms would actually clear procurement in your organization, and which outcome would you personally hold us accountable to? Transition: next slide lays out how we intend to sequence market entry given this model.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Business model</span>
+        <h2 class="t-headline">Recurring software with measurable operational outcomes</h2>
+      </div>
+      <span class="flag">Unvalidated / illustrative pricing</span>
+    </div>
+    <div class="split fill" style="margin-top:8px;">
+      <div class="reveal">
+        <span class="t-micro-strong" style="display:block; margin-bottom:20px;">Revenue</span>
+        <div class="simple-list">
+          <div class="simple-row"><span class="num">·</span><span class="item">Enterprise platform fee</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Per-asset fee</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Per-site fee</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Integration fee</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Edge deployment</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Outcome fee</span></div>
+        </div>
+      </div>
+      <div class="reveal split-divider" style="padding-left:var(--gap-lg);">
+        <span class="t-micro-strong" style="display:block; margin-bottom:20px;">Outcomes it maps to</span>
+        <div class="simple-list">
+          <div class="simple-row"><span class="num">·</span><span class="item">Availability</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Avoided site visits</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Generation recovered</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Energy savings</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">12 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 13 — GO-TO-MARKET
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: the go-to-market sequence is deliberately narrow-to-wide — prove reliability on one asset class and one workflow before expanding scope. Evidence/assumption: this five-phase sequence is a hypothesis about sequencing, not a committed timeline or funded roadmap. Discussion question: does starting at charger uptime and expanding toward site and portfolio operations match how your organization would actually adopt a system like this, or would you enter at a different phase? Transition: to test all of these hypotheses responsibly, we need specific input from this room — next slide lists exactly what we want to learn.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Go-to-market</span>
+        <h2 class="t-headline">Start narrow, prove outcomes, expand through the site</h2>
+      </div>
+      <span class="flag">Hypothesis</span>
+    </div>
+    <div class="reveal staircase" style="margin-top:24px; height:58%;">
+      <div class="stair" style="height:42%;"><span class="st-n">01</span><span class="st-label">EV charging uptime</span></div>
+      <div class="stair" style="height:56%;"><span class="st-n">02</span><span class="st-label">Fleet &amp; depot energy</span></div>
+      <div class="stair" style="height:70%;"><span class="st-n">03</span><span class="st-label">Solar &amp; BESS operations</span></div>
+      <div class="stair" style="height:84%;"><span class="st-n">04</span><span class="st-label">Complete site operations</span></div>
+      <div class="stair" style="height:100%;"><span class="st-n">05</span><span class="st-label">Portfolio &amp; grid services</span></div>
+    </div>
+    <div class="reveal callout">
+      <p class="no-em" style="font-style:italic;">Land with reliability. Expand into cross-asset optimization.</p>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">13 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 14 — VALIDATION QUESTIONS
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: this deck is a request for critical scrutiny, not a pitch — these eight questions are what would actually change our roadmap. Evidence/assumption: none of these questions have confirmed answers yet; they are the explicit unknowns we are asking this room to help resolve. Discussion question: pick one question from this list and answer it from your own operation right now. Transition: if the answers are useful, the natural next step is a structured design-partner relationship — next slide.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Validation</span>
+        <h2 class="t-headline">What we need to learn from solar operators</h2>
+      </div>
+      <span class="t-mono-tag">14 — OPEN QUESTIONS</span>
+    </div>
+    <div class="reveal fill index-list">
+      <div class="index-row"><span class="num">01</span><span class="t-row-headline">Which incidents consume the most time?</span></div>
+      <div class="index-row"><span class="num">02</span><span class="t-row-headline">Which faults cause avoidable site visits?</span></div>
+      <div class="index-row"><span class="num">03</span><span class="t-row-headline">Which actions can safely be remote?</span></div>
+      <div class="index-row"><span class="num">04</span><span class="t-row-headline">What telemetry is consistently available?</span></div>
+      <div class="index-row"><span class="num">05</span><span class="t-row-headline">How fragmented are OEM systems?</span></div>
+      <div class="index-row"><span class="num">06</span><span class="t-row-headline">Who owns the budget?</span></div>
+      <div class="index-row"><span class="num">07</span><span class="t-row-headline">What is delayed resolution worth?</span></div>
+      <div class="index-row"><span class="num">08</span><span class="t-row-headline">Where will an independent layer face resistance?</span></div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">14 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 15 — DESIGN-PARTNER PROGRAMME
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: we want to build with operators, not around them — a fair exchange of operational access for analysis, tooling and a seat in the roadmap. Evidence/assumption: no design partners are confirmed yet; this describes an offer, not existing relationships. Discussion question: what would make this exchange worth it for your organization specifically — what's the analysis or tool you'd most want in return? Transition: closing thought ties this back to the broader thesis.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-micro kicker">Design-partner programme</span>
+        <h2 class="t-headline">Build with operators, not around them</h2>
+      </div>
+      <span class="t-mono-tag">15 — PARTNERSHIP</span>
+    </div>
+    <div class="split fill">
+      <div class="reveal">
+        <span class="t-micro-strong" style="display:block; margin-bottom:20px;">We seek</span>
+        <div class="simple-list">
+          <div class="simple-row"><span class="num">·</span><span class="item">Operational interviews</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Historical incidents</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Alarm taxonomies</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Sample telemetry</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Operating procedures</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Technician workflows</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Safety feedback</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Pilot introductions</span></div>
+        </div>
+      </div>
+      <div class="reveal split-divider" style="padding-left:var(--gap-lg);">
+        <span class="t-micro-strong" style="display:block; margin-bottom:20px;">We provide</span>
+        <div class="simple-list">
+          <div class="simple-row"><span class="num">·</span><span class="item">Workflow analysis</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Incident taxonomy</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Prototype console</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Historical replay</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Pilot framework</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Roadmap participation</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot</div>
+  <div class="pagenum">15 / 16</div>
+</section>
+
+<!-- =========================================================
+     SLIDE 16 — CLOSING
+     ========================================================= -->
+<section class="slide" data-notes="Main argument: distributed energy operations won't scale through better dashboards alone — it needs a trusted layer that can understand assets, coordinate approved responses, and expand autonomy only as it earns trust. Evidence/assumption: this is the deck's closing thesis restated; treat it as the summary claim to challenge, not a settled conclusion. Discussion question: what would have to be true for you to trust this layer with your operations in twelve months? Transition: end of deck — open the floor for critical feedback, questions, and next steps on the design-partner programme.">
+  <div class="hairline-top"></div><div class="hairline-bottom"></div>
+  <div class="pixel-glitch left" aria-hidden="true">
+    <svg width="300" height="1080" viewBox="0 0 300 1080" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="scan2" width="10" height="10" patternUnits="userSpaceOnUse"><line x1="2" y1="0" x2="2" y2="10" stroke="#1F2BE0" stroke-width="1.4" opacity="0.55"/></pattern>
+      </defs>
+      <rect x="0" y="0" width="100" height="1080" fill="url(#scan2)"/>
+      <rect x="90" y="220" width="90" height="640" fill="url(#scan2)" opacity="0.7"/>
+    </svg>
+  </div>
+  <div class="frame" style="display:flex; flex-direction:column; align-items:flex-end; text-align:right;">
+    <span class="reveal t-micro" style="flex:0 0 auto;">Closing</span>
+    <div class="reveal" style="margin-top:auto; margin-bottom:auto; padding-top:24px;">
+      <h2 class="t-display-chapter" style="font-size:84px; max-width:1400px; margin-bottom:30px;">Distributed energy will not scale through more dashboards alone</h2>
+      <div style="max-width:1050px; margin-left:auto;">
+        <p class="t-body-lede" style="margin-bottom:8px;">It requires a trusted operations layer that can:</p>
+        <div class="simple-list compact" style="text-align:left;">
+          <div class="simple-row"><span class="num">·</span><span class="item">Understand heterogeneous assets</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Diagnose incidents</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Coordinate approved responses</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Verify outcomes</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Retain operational knowledge</span></div>
+          <div class="simple-row"><span class="num">·</span><span class="item">Expand safely toward bounded autonomy</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal attribution" style="align-self:flex-end; flex:0 0 auto;">
+      <span class="t-display-quote" style="font-size:56px;">GridPilot</span>
+      <span class="t-mono-tag" style="opacity:0.75;">From alert to resolution.</span>
+    </div>
+  </div>
+  <div class="brandmark">GridPilot — Internal discussion draft</div>
+  <div class="pagenum">16 / 16</div>
+</section>
+
+</main>
+</div>
+
+<!-- Notes panel -->
+<div class="notes-panel" id="notesPanel">
+  <div class="nk">Speaker notes — press N to hide</div>
+  <div id="notesBody"></div>
+</div>
+
+<!-- Deck controls -->
+<div class="deck-controls">
+  <span id="slideCounter">01 / 16</span>
+  <span class="sep">|</span>
+  <button id="prevBtn">← PREV</button>
+  <button id="nextBtn">NEXT →</button>
+  <span class="sep">|</span>
+  <button id="notesBtn">NOTES (N)</button>
+</div>
+
+<!-- Inline editing affordance -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">✎</button>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================== */
+class SlidePresentation {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.currentSlide = 0;
+    this.stage = document.getElementById('deckStage');
+    this.notesPanel = document.getElementById('notesPanel');
+    this.notesBody = document.getElementById('notesBody');
+    this.notesOn = false;
+    this.setupStageScale();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.setupControls();
+    this.showSlide(0);
+  }
+  setupStageScale() {
+    const scale = () => {
+      const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const x = (window.innerWidth - 1920 * factor) / 2;
+      const y = (window.innerHeight - 1080 * factor) / 2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+    };
+    scale();
+    window.addEventListener('resize', scale);
+  }
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      if (e.target.getAttribute && e.target.getAttribute('contenteditable')) return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); this.next(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); this.prev(); }
+      else if (e.key === 'n' || e.key === 'N') { this.toggleNotes(); }
+      else if (e.key === 'e' || e.key === 'E') { window.editor && window.editor.toggleEditMode(); }
+    });
+  }
+  setupTouchNav() {
+    let startX = 0;
+    document.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, {passive:true});
+    document.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 50) { dx < 0 ? this.next() : this.prev(); }
+    }, {passive:true});
+  }
+  setupWheelNav() {
+    let locked = false;
+    window.addEventListener('wheel', (e) => {
+      if (locked) return;
+      if (Math.abs(e.deltaY) < 20) return;
+      locked = true;
+      e.deltaY > 0 ? this.next() : this.prev();
+      setTimeout(() => locked = false, 500);
+    }, {passive:true});
+  }
+  setupControls() {
+    document.getElementById('prevBtn').addEventListener('click', () => this.prev());
+    document.getElementById('nextBtn').addEventListener('click', () => this.next());
+    document.getElementById('notesBtn').addEventListener('click', () => this.toggleNotes());
+  }
+  next() { this.showSlide(this.currentSlide + 1); }
+  prev() { this.showSlide(this.currentSlide - 1); }
+  showSlide(index) {
+    this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+    this.slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === this.currentSlide);
+      slide.classList.toggle('visible', i === this.currentSlide);
+    });
+    const n = this.currentSlide + 1;
+    document.getElementById('slideCounter').textContent = String(n).padStart(2,'0') + ' / ' + this.slides.length;
+    if (this.notesOn) this.renderNotes();
+  }
+  toggleNotes() {
+    this.notesOn = !this.notesOn;
+    this.notesPanel.classList.toggle('show', this.notesOn);
+    if (this.notesOn) this.renderNotes();
+  }
+  renderNotes() {
+    const notes = this.slides[this.currentSlide].getAttribute('data-notes') || '';
+    this.notesBody.innerHTML = notes.replace(/(Main argument:|Evidence\/assumption:|Discussion question:|Transition:)/g, '<br><strong>$1</strong>');
+  }
+}
+
+/* ===========================================
+   MINIMAL INLINE TEXT EDITOR
+   =========================================== */
+class InlineEditor {
+  constructor() {
+    this.isActive = false;
+    this.storageKey = 'gridpilot-deck-edits';
+    this.editableSelector = 'h1,h2,h4,p,span.item,span.label,span.rowhead,.step';
+    this.loadEdits();
+    this.bindHotzone();
+  }
+  bindHotzone() {
+    const hotzone = document.getElementById('editHotzone');
+    const toggle = document.getElementById('editToggle');
+    let hideTimeout = null;
+    const show = () => { clearTimeout(hideTimeout); toggle.classList.add('show'); };
+    const scheduleHide = () => { hideTimeout = setTimeout(() => { if (!this.isActive) toggle.classList.remove('show'); }, 400); };
+    hotzone.addEventListener('mouseenter', show);
+    hotzone.addEventListener('mouseleave', scheduleHide);
+    toggle.addEventListener('mouseenter', show);
+    toggle.addEventListener('mouseleave', scheduleHide);
+    hotzone.addEventListener('click', () => this.toggleEditMode());
+    toggle.addEventListener('click', () => this.toggleEditMode());
+  }
+  toggleEditMode() {
+    this.isActive = !this.isActive;
+    document.getElementById('editToggle').classList.toggle('active', this.isActive);
+    document.querySelectorAll('.slide ' + this.editableSelector).forEach(el => {
+      el.setAttribute('contenteditable', this.isActive ? 'true' : 'false');
+      if (this.isActive) {
+        el.addEventListener('blur', () => this.saveEdits());
+      }
+    });
+  }
+  saveEdits() {
+    const data = {};
+    document.querySelectorAll('.slide').forEach((slide, si) => {
+      slide.querySelectorAll(this.editableSelector).forEach((el, ei) => {
+        data[si + '-' + ei] = el.innerHTML;
+      });
+    });
+    localStorage.setItem(this.storageKey, JSON.stringify(data));
+  }
+  loadEdits() {
+    try {
+      const data = JSON.parse(localStorage.getItem(this.storageKey) || '{}');
+      document.querySelectorAll('.slide').forEach((slide, si) => {
+        slide.querySelectorAll(this.editableSelector).forEach((el, ei) => {
+          const key = si + '-' + ei;
+          if (data[key] !== undefined) el.innerHTML = data[key];
+        });
+      });
+    } catch(e) {}
+  }
+}
+
+window.deck = new SlidePresentation();
+window.editor = new InlineEditor();
+</script>
+</body>
+</html>

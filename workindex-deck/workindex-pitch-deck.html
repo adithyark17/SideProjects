@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkIndex — The Intelligence Layer for India's Technology Employment Market</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   THEME — Cobalt Grid design system
+   Two-color risograph editorial system: cream paper + electric cobalt ink.
+   =========================================== */
+:root{
+  --paper:#F0EBDE;
+  --paper-2:#E6E0CE;
+  --ink:#1F2BE0;
+  --ink-soft:#5560E5;
+  --grid: rgba(31,43,224,0.10);
+  --ink-faint: rgba(31,43,224,0.18);
+
+  --f-display:'Newsreader', Georgia, serif;
+  --f-body:'Hanken Grotesk', sans-serif;
+  --f-mono:'DM Mono', ui-monospace, monospace;
+
+  --edge:72px;
+  --pad-top:120px;
+  --pad-bottom:132px;
+  --gap-lg:48px;
+  --gap-md:32px;
+  --gap-sm:20px;
+  --gap-xs:14px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --stage-bg:#0d0d0a;
+  --slide-bg: var(--paper);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* ===========================================
+   FIXED 16:9 STAGE — mandatory base (viewport-base.css, included in full)
+   =========================================== */
+html, body{ width:100%; height:100%; margin:0; overflow:hidden; background: var(--stage-bg); }
+.deck-viewport{ position:fixed; inset:0; overflow:hidden; background: var(--stage-bg); }
+.deck-stage{ position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:hidden; transform-origin:0 0; background: var(--slide-bg); }
+.slide{ position:absolute; inset:0; width:1920px; height:1080px; overflow:hidden; display:block; visibility:hidden; opacity:0; pointer-events:none; background: var(--slide-bg); }
+.slide.active, .slide.visible{ visibility:visible; opacity:1; pointer-events:auto; z-index:1; }
+img, video, canvas, svg{ max-width:100%; max-height:100%; }
+.deck-controls{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:1000; }
+@media print{
+  html, body{ width:1920px; height:auto; overflow:visible; background:#fff; }
+  .deck-viewport{ position:static; overflow:visible; background:#fff; }
+  .deck-stage{ position:static; width:auto; height:auto; transform:none !important; background:none; }
+  .slide{ position:relative; display:block !important; visibility:visible !important; opacity:1 !important; pointer-events:auto !important; width:1920px; height:1080px; break-after:page; page-break-after:always; }
+  .slide:last-child{ break-after:auto; page-break-after:auto; }
+  .deck-controls{ display:none !important; }
+}
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation-duration:0.01ms !important; transition-duration:0.2s !important; }
+}
+
+/* ===========================================
+   COBALT GRID — canvas texture, chrome frame
+   =========================================== */
+.slide{
+  color: var(--ink);
+  font-family: var(--f-body);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+  transition: opacity 0.28s ease;
+}
+.slide::before, .slide::after{
+  content:'';
+  position:absolute;
+  left: var(--edge);
+  right: var(--edge);
+  height:1.5px;
+  background: var(--ink);
+  z-index:2;
+}
+.slide::before{ top:64px; }
+.slide::after{ bottom:52px; }
+
+.pagenum{
+  position:absolute; right: var(--edge); bottom:78px;
+  font-family: var(--f-mono); font-size:13px; letter-spacing:0.06em; color: var(--ink); z-index:3;
+}
+.navhint{
+  position:absolute; left: var(--edge); bottom:78px;
+  font-family: var(--f-mono); font-size:12px; letter-spacing:0.08em; color: var(--ink); opacity:0.4; z-index:3;
+  text-transform:uppercase;
+}
+.frame{
+  position:absolute;
+  top: var(--pad-top); left: var(--edge); right: var(--edge); bottom: var(--pad-bottom);
+  z-index:2;
+}
+
+/* ===========================================
+   TYPOGRAPHY ROLES
+   =========================================== */
+.display-hero{ font-family:var(--f-display); font-weight:400; font-size:190px; line-height:0.92; letter-spacing:-0.008em; color:var(--ink); }
+.display-closing{ font-family:var(--f-display); font-weight:400; font-size:150px; line-height:0.96; letter-spacing:-0.005em; color:var(--ink); }
+.display-chapter{ font-family:var(--f-display); font-weight:400; font-size:110px; line-height:1.0; letter-spacing:-0.005em; color:var(--ink); }
+.display-manifesto{ font-family:var(--f-display); font-weight:400; font-size:98px; line-height:1.08; letter-spacing:-0.005em; color:var(--ink); }
+.display-quote{ font-family:var(--f-display); font-weight:400; font-size:78px; line-height:1.12; letter-spacing:-0.005em; color:var(--ink); }
+.headline-index{ font-family:var(--f-display); font-weight:400; font-size:88px; line-height:0.98; color:var(--ink); }
+.headline{ font-family:var(--f-display); font-weight:400; font-size:80px; line-height:1.0; color:var(--ink); }
+.ed-callout{ font-family:var(--f-display); font-weight:400; font-size:44px; line-height:1.15; color:var(--ink); }
+.row-headline{ font-family:var(--f-display); font-weight:400; font-size:32px; line-height:1.15; color:var(--ink); }
+.table-name{ font-family:var(--f-display); font-weight:400; font-size:24px; line-height:1.2; color:var(--ink); }
+.micro-strong{ font-family:var(--f-body); font-weight:600; font-size:16px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink); }
+.micro{ font-family:var(--f-body); font-weight:600; font-size:14px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink); }
+.micro-sm{ font-family:var(--f-body); font-weight:600; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink); }
+.body-lede{ font-family:var(--f-body); font-weight:400; font-size:19px; line-height:1.5; color:var(--ink); }
+.body-stat{ font-family:var(--f-body); font-weight:400; font-size:17px; line-height:1.5; color:var(--ink); }
+.body{ font-family:var(--f-body); font-weight:400; font-size:15px; line-height:1.55; color:var(--ink); }
+.mono-tag{ font-family:var(--f-mono); font-weight:400; font-size:15px; letter-spacing:0.04em; color:var(--ink); }
+.mono-tick{ font-family:var(--f-mono); font-weight:400; font-size:14px; letter-spacing:0.04em; color:var(--ink); }
+.mono-chrome{ font-family:var(--f-mono); font-weight:400; font-size:13px; letter-spacing:0.06em; color:var(--ink); }
+em{ font-style:italic; }
+.vbig-numeral{ font-family:var(--f-display); font-weight:400; font-size:170px; line-height:0.92; letter-spacing:-0.015em; color:var(--ink); }
+
+/* ===========================================
+   COMPONENTS
+   =========================================== */
+.topbar{
+  display:flex; align-items:flex-end; justify-content:space-between;
+  border-bottom:1.5px solid var(--ink); padding-bottom:16px; margin-bottom: var(--gap-lg);
+}
+.topbar h2{ margin:0; }
+.topbar .labtag{ font-family:var(--f-mono); font-size:15px; letter-spacing:0.06em; color:var(--ink); white-space:nowrap; padding-bottom:10px; }
+
+.index-list{ display:flex; flex-direction:column; }
+.index-row{
+  display:flex; gap: var(--gap-md); align-items:flex-start;
+  border-bottom:1px solid var(--ink-faint); padding: 15px 0;
+}
+.index-row:last-child{ border-bottom:none; }
+.num-tag{ font-family:var(--f-mono); font-size:15px; color:var(--ink); width:52px; flex-shrink:0; padding-top:3px; }
+.index-row .content{ flex:1; }
+.index-row .row-headline{ margin-bottom:4px; }
+.index-row .body{ color: var(--ink); opacity:0.92; }
+
+.ledger{ display:flex; flex-direction:column; }
+.ledger-head{
+  display:grid; grid-template-columns: 68px 1fr 2fr; gap: var(--gap-sm);
+  border-bottom:1.5px solid var(--ink); padding-bottom:10px; margin-bottom:6px;
+}
+.ledger-row{
+  display:grid; grid-template-columns: 68px 1fr 2fr; gap: var(--gap-sm);
+  border-bottom:1px solid var(--ink-faint); padding: 13px 0; align-items:start;
+}
+.ledger-row .table-name{ padding-top:4px; }
+.ledger-row .body{ padding-top:2px; }
+.ledger-row:last-child{ border-bottom:none; }
+
+.chip-row{ display:flex; flex-wrap:wrap; gap:12px; }
+.chip{
+  border:1px solid var(--ink); padding:9px 18px;
+  font-family:var(--f-mono); font-size:13px; letter-spacing:0.05em; color:var(--ink);
+}
+.chip.fill{ background:var(--ink); color:var(--paper); }
+
+.qr-block{
+  display:grid; grid-template-columns:repeat(8,1fr); grid-template-rows:repeat(8,1fr);
+  gap:1.5px; width:72px; height:72px; background:var(--paper); padding:4px;
+  box-shadow:0 0 0 1.5px var(--paper); position:absolute;
+}
+.qr-block div{ background:var(--grid); }
+.qr-block div.on{ background:var(--ink); }
+
+.pixel-glitch{ position:absolute; top:0; bottom:0; z-index:1; pointer-events:none; display:flex; align-items:flex-start; overflow:hidden; }
+.glitch-step{ height:150px; background-image: repeating-linear-gradient(to right, var(--ink) 0 2px, transparent 2px 9px); }
+
+.attribution-rule{ border-top:1px solid var(--ink); padding-top: var(--gap-sm); margin-top: var(--gap-md); }
+
+.pixel-stack{ display:flex; align-items:flex-end; gap:22px; height:100%; }
+.pstack-col{ display:flex; flex-direction:column-reverse; gap:3px; width:38px; }
+.pstack-col .cell{ height:11px; background:var(--grid); }
+.pstack-col .cell.on{ background:var(--ink); }
+.pstack-label{ font-family:var(--f-mono); font-size:12px; letter-spacing:0.04em; color:var(--ink); text-align:center; margin-top:10px; }
+
+.delta{ font-family:var(--f-mono); font-size:14px; color:var(--ink); }
+.delta.down::before{ content:'\2193 '; opacity:0.6; }
+.delta.up::before{ content:'\2191 '; }
+.delta.flat::before{ content:'\2014 '; opacity:0.6; }
+
+/* Phase / timeline columns */
+.phase-col{ border-left:1.5px solid var(--ink); padding-left: var(--gap-md); }
+.phase-col:first-child{ border-left:none; padding-left:0; }
+
+/* ===========================================
+   ENTRANCE REVEAL ANIMATION
+   =========================================== */
+.reveal{ opacity:0; transform:translateY(24px); transition:opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo); }
+.slide.visible .reveal{ opacity:1; transform:translateY(0); }
+.reveal:nth-child(1){ transition-delay:0.05s; }
+.reveal:nth-child(2){ transition-delay:0.12s; }
+.reveal:nth-child(3){ transition-delay:0.19s; }
+.reveal:nth-child(4){ transition-delay:0.26s; }
+.reveal:nth-child(5){ transition-delay:0.33s; }
+.frame .reveal{ transition-delay:0.15s; }
+
+/* ===========================================
+   DECK CHROME (nav dots, outside stage)
+   =========================================== */
+.deck-controls{ display:flex; align-items:center; gap:14px; }
+.dc-btn{
+  width:40px; height:40px; border-radius:50%; border:1.5px solid var(--ink);
+  background:var(--paper); color:var(--ink); font-family:var(--f-mono); font-size:16px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.dc-btn:hover{ background:var(--ink); color:var(--paper); }
+.dc-progress{ font-family:var(--f-mono); font-size:13px; color:var(--ink); background:var(--paper); border:1.5px solid var(--ink); padding:8px 16px; }
+
+/* ===========================================
+   INLINE EDITING AFFORDANCE
+   =========================================== */
+.edit-hotzone{ position:fixed; top:0; left:0; width:80px; height:80px; z-index:10000; cursor:pointer; }
+.edit-toggle{
+  position:fixed; top:16px; left:16px; z-index:10001;
+  width:40px; height:40px; border-radius:50%; border:1.5px solid var(--ink);
+  background:var(--paper); font-size:16px; cursor:pointer;
+  opacity:0; pointer-events:none; transition:opacity 0.3s ease;
+}
+.edit-toggle.show, .edit-toggle.active{ opacity:1; pointer-events:auto; }
+[contenteditable="true"]{ outline:1.5px dashed var(--ink-soft); outline-offset:4px; cursor:text; }
+.edit-banner{
+  position:fixed; top:16px; left:66px; z-index:10001;
+  font-family:var(--f-mono); font-size:12px; letter-spacing:0.06em; color:var(--ink);
+  background:var(--paper); border:1.5px solid var(--ink); padding:8px 14px;
+  opacity:0; pointer-events:none; transition:opacity 0.3s ease;
+}
+.edit-banner.show{ opacity:1; }
+</style>
+</head>
+<body>
+
+<div class="deck-hotzone-wrap">
+  <div class="edit-hotzone" id="editHotzone"></div>
+  <button class="edit-toggle" id="editToggle" title="Edit mode (E)">&#9998;</button>
+  <div class="edit-banner" id="editBanner">EDIT MODE — click text to edit, Ctrl+S to save</div>
+</div>
+
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+<!-- ============================================================
+     SLIDE 01 — COVER
+     ============================================================ -->
+<section class="slide active" data-page="01">
+  <div class="pixel-glitch" style="right:0; width:420px;">
+    <div class="glitch-step reveal" style="width:60px; margin-top:0;"></div>
+    <div class="glitch-step reveal" style="width:90px; margin-top:120px;"></div>
+    <div class="glitch-step reveal" style="width:130px; margin-top:280px;"></div>
+    <div class="glitch-step reveal" style="width:180px; margin-top:480px; opacity:0.7;"></div>
+  </div>
+  <div class="qr-block reveal" style="top:96px; right:calc(var(--edge) + 0px);">
+    <div class="on"></div><div></div><div class="on"></div><div></div><div></div><div class="on"></div><div></div><div class="on"></div>
+    <div></div><div class="on"></div><div class="on"></div><div></div><div class="on"></div><div></div><div></div><div class="on"></div>
+    <div class="on"></div><div></div><div></div><div class="on"></div><div></div><div class="on"></div><div class="on"></div><div></div>
+    <div></div><div class="on"></div><div></div><div></div><div class="on"></div><div></div><div class="on"></div><div></div>
+    <div class="on"></div><div></div><div class="on"></div><div></div><div></div><div class="on"></div><div></div><div class="on"></div>
+    <div></div><div></div><div class="on"></div><div class="on"></div><div class="on"></div><div></div><div class="on"></div><div></div>
+    <div class="on"></div><div class="on"></div><div></div><div></div><div class="on"></div><div></div><div></div><div class="on"></div>
+    <div></div><div class="on"></div><div></div><div class="on"></div><div></div><div class="on"></div><div class="on"></div><div></div>
+  </div>
+
+  <div class="micro-strong reveal" style="position:absolute; left:var(--edge); top:96px;">Internal Concept Deck</div>
+
+  <h1 class="display-hero reveal" style="position:absolute; left:var(--edge); top:340px; width:1400px;">WorkIndex</h1>
+
+  <p class="ed-callout reveal" style="position:absolute; left:var(--edge); top:590px; width:1200px;">Know where India's best work is being built.</p>
+
+  <p class="body-lede reveal" style="position:absolute; left:var(--edge); top:680px; width:920px; opacity:0.85;">India's intelligence platform for GCCs, startups, hiring, salaries, and career decisions.</p>
+
+  <div class="chip-row reveal" style="position:absolute; left:var(--edge); top:790px; width:900px;">
+    <div class="chip fill">GCC Intelligence</div>
+    <div class="chip">Startup Intelligence</div>
+    <div class="chip">Salary Benchmarks</div>
+    <div class="chip">Hiring Signals</div>
+  </div>
+
+  <div class="mono-chrome reveal" style="position:absolute; left:var(--edge); bottom:150px;">July 2026</div>
+  <div class="pagenum">01 / 18</div>
+  <div class="navhint">WorkIndex — Internal Concept Deck</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 02 — THE PROBLEM
+     ============================================================ -->
+<section class="slide" data-page="02">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">The Problem</h2>
+      <div class="labtag">02 — FRAGMENTATION</div>
+    </div>
+    <p class="ed-callout reveal" style="width:1500px; margin-bottom:36px;">India's technology employment market is fragmented</p>
+
+    <div style="display:flex; gap:64px;">
+      <div style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:10px;">Disconnected platforms today</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">01</div><div class="content"><div class="body">LinkedIn and job boards — for open roles</div></div></div>
+          <div class="index-row"><div class="num-tag">02</div><div class="content"><div class="body">Salary platforms — for compensation</div></div></div>
+          <div class="index-row"><div class="num-tag">03</div><div class="content"><div class="body">Review platforms — for culture</div></div></div>
+          <div class="index-row"><div class="num-tag">04</div><div class="content"><div class="body">Startup databases — for funding</div></div></div>
+          <div class="index-row"><div class="num-tag">05</div><div class="content"><div class="body">News sites — for expansion announcements</div></div></div>
+          <div class="index-row"><div class="num-tag">06</div><div class="content"><div class="body">Social media — for interview &amp; workplace info</div></div></div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:10px;">The result</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Data is fragmented across sources</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Salary information lacks context</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Job listings do not explain company quality</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Employee reviews are often noisy</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">GCC mandates are difficult to understand</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Candidates struggle to compare offers objectively</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="attribution-rule reveal">
+      <p class="row-headline" style="width:1500px;">Core problem: there is no trusted intelligence layer for deciding where to work in India's technology economy.</p>
+    </div>
+  </div>
+  <div class="pagenum">02 / 18</div>
+  <div class="navhint">The Problem</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 03 — WHY NOW
+     ============================================================ -->
+<section class="slide" data-page="03">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Why Now</h2>
+      <div class="labtag">03 — MARKET SHIFTS</div>
+    </div>
+    <p class="ed-callout reveal" style="width:1500px; margin-bottom:40px;">India is entering a new employment-intelligence era</p>
+
+    <div style="display:flex; gap:64px;">
+      <div style="flex:1.1;">
+        <div class="micro reveal" style="margin-bottom:10px;">Three shifts creating this opportunity</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">01</div><div class="content"><div class="row-headline">Global capability centres are expanding</div><div class="body">Global companies are rapidly expanding capability centres across India.</div></div></div>
+          <div class="index-row"><div class="num-tag">02</div><div class="content"><div class="row-headline">Startups and GCCs compete for the same talent</div><div class="body">Both are chasing the same pool of high-quality technology professionals.</div></div></div>
+          <div class="index-row"><div class="num-tag">03</div><div class="content"><div class="row-headline">Candidates want evidence, not vibes</div><div class="body">Professionals increasingly want evidence before changing jobs.</div></div></div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:10px;">Key market signals</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Rapid GCC growth in Bengaluru, Hyderabad, Pune, Chennai, NCR, Mumbai</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">More product, AI, analytics, finance, cybersecurity mandates moving to India</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Greater candidate interest in compensation transparency</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Higher demand for company- and city-level employment data</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Increasing complexity comparing RSUs, ESOPs, bonuses, ownership, stability</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">03 / 18</div>
+  <div class="navhint">Why Now</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 04 — THE OPPORTUNITY
+     ============================================================ -->
+<section class="slide" data-page="04">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">The Opportunity</h2>
+      <div class="labtag">04 — PRODUCT VISION</div>
+    </div>
+    <p class="ed-callout reveal" style="width:1600px; margin-bottom:36px;">Build the employment intelligence platform for India</p>
+
+    <div style="display:flex; gap:64px;">
+      <div style="flex:1.3;">
+        <div class="micro reveal" style="margin-bottom:10px;">WorkIndex combines</div>
+        <div class="chip-row reveal" style="gap:10px;">
+          <div class="chip">GCC launch &amp; expansion intelligence</div>
+          <div class="chip">Startup growth &amp; funding signals</div>
+          <div class="chip">Active job tracking</div>
+          <div class="chip">Historical hiring trends</div>
+          <div class="chip">Salary benchmarks</div>
+          <div class="chip">Role &amp; level mapping</div>
+          <div class="chip">Interview intelligence</div>
+          <div class="chip">Workplace &amp; culture information</div>
+          <div class="chip">Company &amp; offer comparisons</div>
+          <div class="chip">City-level employment insights</div>
+          <div class="chip">Source provenance &amp; confidence scores</div>
+        </div>
+      </div>
+      <div style="flex:1; border-left:1.5px solid var(--ink); padding-left:48px;">
+        <div class="body reveal" style="margin-bottom:14px; opacity:0.85;">This is not another job board.</div>
+        <div class="body reveal" style="margin-bottom:14px; opacity:0.85;">This is not only a salary website.</div>
+        <div class="body reveal" style="margin-bottom:28px; opacity:0.85;">This is not an anonymous review platform.</div>
+        <p class="row-headline reveal" style="width:520px;">WorkIndex is the decision layer between discovery, research, interviewing, and accepting an offer.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">04 / 18</div>
+  <div class="navhint">The Opportunity</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 05 — PRODUCT ARCHITECTURE
+     ============================================================ -->
+<section class="slide" data-page="05">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Product Architecture</h2>
+      <div class="labtag">05 — ONE PLATFORM, TWO VERTICALS</div>
+    </div>
+
+    <div style="display:flex; gap:56px; margin-bottom:32px;">
+      <div style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:10px; padding-bottom:10px; border-bottom:1.5px solid var(--ink);">WorkIndex GCC</div>
+        <div class="body reveal" style="columns:2; column-gap:28px; line-height:2.0;">
+          New GCC launches<br>Expansion announcements<br>City selection<br>Hiring plans<br>Global mandates<br>India leadership<br>Roles &amp; capabilities<br>Salary benchmarks<br>GCC maturity<br>Active jobs<br>Interview experiences
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:10px; padding-bottom:10px; border-bottom:1.5px solid var(--ink);">WorkIndex Startups</div>
+        <div class="body reveal" style="columns:2; column-gap:28px; line-height:2.0;">
+          Funding stage<br>Hiring momentum<br>Founder &amp; investor context<br>Salary &amp; ESOP benchmarks<br>Layoff history<br>Stability signals<br>Remote / hybrid policies<br>Active jobs<br>Interview experiences
+        </div>
+      </div>
+    </div>
+
+    <div class="attribution-rule reveal">
+      <div class="micro-sm" style="margin-bottom:14px;">Shared platform modules</div>
+      <div class="chip-row">
+        <div class="chip fill">Companies</div><div class="chip fill">Jobs</div><div class="chip fill">Salaries</div><div class="chip fill">Compare</div>
+        <div class="chip fill">Cities</div><div class="chip fill">Roles</div><div class="chip fill">Reports</div><div class="chip fill">Alerts</div><div class="chip fill">Community contributions</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">05 / 18</div>
+  <div class="navhint">Product Architecture</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 06 — INITIAL WEDGE
+     ============================================================ -->
+<section class="slide" data-page="06">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Initial Wedge</h2>
+      <div class="labtag">06 — INDIA GCC LAUNCH TRACKER</div>
+    </div>
+    <p class="ed-callout reveal" style="width:1500px; margin-bottom:32px;">Start with the India GCC Launch Tracker</p>
+
+    <div style="display:flex; gap:56px;">
+      <div style="flex:1.2;">
+        <div class="micro reveal" style="margin-bottom:10px;">What the tracker follows</div>
+        <div class="chip-row reveal" style="gap:10px;">
+          <div class="chip">New GCC announcements</div><div class="chip">Office inaugurations</div><div class="chip">Cities selected</div>
+          <div class="chip">Expected hiring</div><div class="chip">Functions planned</div><div class="chip">Office locations</div>
+          <div class="chip">Leaders appointed</div><div class="chip">Expansion announcements</div><div class="chip">Active jobs</div>
+          <div class="chip">Original sources</div><div class="chip">Last verified date</div>
+        </div>
+        <div class="micro reveal" style="margin:28px 0 10px;">Initial city focus</div>
+        <div class="chip-row reveal">
+          <div class="chip fill">Bengaluru</div><div class="chip fill">Hyderabad</div><div class="chip fill">Pune</div>
+        </div>
+      </div>
+      <div style="flex:1; border-left:1.5px solid var(--ink); padding-left:48px;">
+        <div class="micro reveal" style="margin-bottom:10px;">Why this wedge works</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Clear and timely use case</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Underserved niche</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Strong SEO potential</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Highly shareable data</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Useful to candidates, recruiters, journalists, advisors, GCC leaders</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Creates the company database needed for future products</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">06 / 18</div>
+  <div class="navhint">Initial Wedge</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 07 — CANDIDATE EXPERIENCE
+     ============================================================ -->
+<section class="slide" data-page="07">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Candidate Experience</h2>
+      <div class="labtag">07 — FROM DISCOVERY TO DECISION</div>
+    </div>
+
+    <div style="display:flex; gap:56px;">
+      <div style="flex:1.3;">
+        <div class="micro reveal" style="margin-bottom:10px;">Example user journey</div>
+        <div class="ledger reveal">
+          <div class="ledger-row"><div class="mono-tag">01</div><div class="body">Discovers a new GCC in Hyderabad</div><div></div></div>
+          <div class="ledger-row"><div class="mono-tag">02</div><div class="body">Opens the company profile</div><div></div></div>
+          <div class="ledger-row"><div class="mono-tag">03</div><div class="body">Reviews mandate, office, leadership, active roles</div><div></div></div>
+          <div class="ledger-row"><div class="mono-tag">04</div><div class="body">Checks salary benchmarks for role &amp; level</div><div></div></div>
+          <div class="ledger-row"><div class="mono-tag">05</div><div class="body">Reads interview experiences</div><div></div></div>
+          <div class="ledger-row"><div class="mono-tag">06</div><div class="body">Compares the GCC with a startup offer</div><div></div></div>
+          <div class="ledger-row"><div class="mono-tag">07</div><div class="body">Saves the company and creates an alert</div><div></div></div>
+          <div class="ledger-row"><div class="mono-tag">08</div><div class="body">Submits compensation data after an offer</div><div></div></div>
+        </div>
+      </div>
+      <div style="flex:1; border-left:1.5px solid var(--ink); padding-left:48px;">
+        <div class="micro reveal" style="margin-bottom:10px;">Key candidate questions answered</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Is the company genuinely hiring?</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Is the India team strategic?</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">What should this role pay?</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Is this title equivalent to my current level?</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Is the opportunity stable?</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Should I choose the GCC or startup offer?</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">07 / 18</div>
+  <div class="navhint">Candidate Experience</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 08 — CORE PRODUCT PAGES
+     ============================================================ -->
+<section class="slide" data-page="08">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Core Product Pages</h2>
+      <div class="labtag">08 — HIGH-VALUE PRODUCT SURFACES</div>
+    </div>
+
+    <div style="display:flex; gap:56px; margin-bottom:32px;">
+      <div style="flex:1;">
+        <div class="body reveal" style="columns:2; column-gap:28px; line-height:2.1; font-size:16px;">
+          GCC directory<br>Startup directory<br>Company profiles<br>City intelligence pages<br>Salary benchmark pages<br>Role pages<br>Company comparison<br>Offer evaluator<br>GCC launch tracker<br>Startup hiring tracker<br>Interview experiences<br>Hiring trend dashboards<br>Market reports<br>Saved companies &amp; alerts
+        </div>
+      </div>
+    </div>
+
+    <div class="attribution-rule reveal">
+      <div class="micro-sm" style="margin-bottom:14px;">Example queries</div>
+      <div class="chip-row">
+        <div class="chip">New GCCs in Hyderabad</div>
+        <div class="chip">AI GCCs hiring in Bengaluru</div>
+        <div class="chip">Staff engineer salary in Pune</div>
+        <div class="chip">Best-paying banking GCCs</div>
+        <div class="chip">Series B startups hiring product managers</div>
+        <div class="chip">GCC versus startup for senior engineers</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">08 / 18</div>
+  <div class="navhint">Core Product Pages</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 09 — DIFFERENTIATION
+     ============================================================ -->
+<section class="slide" data-page="09">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Differentiation</h2>
+      <div class="labtag">09 — WHY EXISTING PLATFORMS FALL SHORT</div>
+    </div>
+
+    <div class="ledger reveal" style="--nm-col:280px;">
+      <div class="ledger-head" style="grid-template-columns: var(--nm-col) 1fr 2fr;"><div class="micro-sm">Category</div><div class="micro-sm">Good for</div><div class="micro-sm">Where it falls short</div></div>
+      <div class="ledger-row" style="grid-template-columns: var(--nm-col) 1fr 2fr;"><div class="table-name">Job boards</div><div class="body">Vacancies</div><div class="body">Weak on company intelligence &amp; compensation context</div></div>
+      <div class="ledger-row" style="grid-template-columns: var(--nm-col) 1fr 2fr;"><div class="table-name">Salary platforms</div><div class="body">Compensation snapshots</div><div class="body">Weak on hiring momentum, strategy, GCC context</div></div>
+      <div class="ledger-row" style="grid-template-columns: var(--nm-col) 1fr 2fr;"><div class="table-name">Review platforms</div><div class="body">Employee opinions</div><div class="body">Often noisy, outdated, hard to compare</div></div>
+      <div class="ledger-row" style="grid-template-columns: var(--nm-col) 1fr 2fr;"><div class="table-name">Startup databases</div><div class="body">Funding information</div><div class="body">Not designed for career decisions</div></div>
+      <div class="ledger-row" style="grid-template-columns: var(--nm-col) 1fr 2fr;"><div class="table-name">Consulting reports</div><div class="body">Market-level insights</div><div class="body">Not candidate-friendly, live, or company-specific</div></div>
+    </div>
+
+    <div class="attribution-rule reveal">
+      <div class="micro-sm" style="margin-bottom:14px;">The WorkIndex advantage</div>
+      <div class="chip-row">
+        <div class="chip fill">India-first data model</div><div class="chip fill">GCC-specific intelligence</div><div class="chip fill">Startup career intelligence</div>
+        <div class="chip fill">Historical hiring signals</div><div class="chip fill">Compensation + company context</div><div class="chip fill">Field-level source provenance</div>
+        <div class="chip fill">Confidence &amp; freshness labels</div><div class="chip fill">GCC vs. startup comparison</div><div class="chip fill">Community &amp; employer verification</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">09 / 18</div>
+  <div class="navhint">Differentiation</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 10 — DATA STRATEGY
+     ============================================================ -->
+<section class="slide" data-page="10">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Data Strategy</h2>
+      <div class="labtag">10 — TRUSTED EMPLOYMENT KNOWLEDGE GRAPH</div>
+    </div>
+
+    <div style="display:flex; gap:56px;">
+      <div style="flex:1.1;">
+        <div class="micro reveal" style="margin-bottom:10px;">Primary data sources</div>
+        <div class="chip-row reveal" style="gap:10px;">
+          <div class="chip">Company career pages</div><div class="chip">Press releases</div><div class="chip">Public ATS feeds</div>
+          <div class="chip">Greenhouse</div><div class="chip">Lever</div><div class="chip">Ashby</div><div class="chip">SmartRecruiters</div>
+          <div class="chip">Workday (where permitted)</div><div class="chip">Corporate filings</div>
+          <div class="chip">Govt. / investment-agency announcements</div><div class="chip">Stock-exchange disclosures</div>
+          <div class="chip">Business publications</div><div class="chip">Community submissions</div><div class="chip">Employer feeds</div>
+        </div>
+        <div class="micro reveal" style="margin:28px 0 10px;">The core data asset</div>
+        <div class="body reveal" style="columns:2; column-gap:28px; line-height:1.9;">
+          Parent–India entity mapping<br>Office &amp; city graph<br>GCC launch history<br>Job history<br>Role normalisation<br>Level mapping<br>Compensation submissions<br>Evidence &amp; confidence scoring
+        </div>
+      </div>
+      <div style="flex:0.85; border-left:1.5px solid var(--ink); padding-left:48px;">
+        <p class="row-headline reveal" style="margin-bottom:20px;">Do not build the business around unauthorised LinkedIn scraping.</p>
+        <div class="micro-sm reveal" style="margin-bottom:12px;">LinkedIn may be used for</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Manual discovery</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Validation</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Distribution</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Community engagement</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Employer profile claiming</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">10 / 18</div>
+  <div class="navhint">Data Strategy</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 11 — BUSINESS MODEL
+     ============================================================ -->
+<section class="slide" data-page="11">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Business Model</h2>
+      <div class="labtag">11 — MULTI-SIDED MONETISATION</div>
+    </div>
+
+    <div style="display:flex; gap:48px;">
+      <div class="phase-col" style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:12px;">Candidate freemium</div>
+        <div class="micro-sm reveal" style="margin-bottom:8px; opacity:0.7;">Free</div>
+        <div class="body reveal" style="margin-bottom:16px; line-height:1.9;">Company profiles · Jobs · Basic salary benchmarks · Reports · Limited comparisons</div>
+        <div class="micro-sm reveal" style="margin-bottom:8px; opacity:0.7;">Paid</div>
+        <div class="body reveal" style="line-height:1.9; margin-bottom:16px;">Detailed percentiles · Unlimited comparisons · Offer evaluator · Advanced alerts · Interview intelligence · Personalised recommendations</div>
+        <div class="chip fill reveal">₹199–₹499 / month — hypothesis</div>
+      </div>
+      <div class="phase-col" style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:12px;">Employer products</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Verified employer profiles</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Job-feed integrations</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Employer branding</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Compensation benchmarks</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Talent-market dashboards</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Competitive hiring intelligence</div></div></div>
+        </div>
+      </div>
+      <div class="phase-col" style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:12px;">B2B intelligence</div>
+        <div class="micro-sm reveal" style="margin-bottom:8px; opacity:0.7;">Customers</div>
+        <div class="body reveal" style="margin-bottom:16px; line-height:1.9;">GCC advisory firms · Recruitment agencies · Comp consultancies · Real-estate firms · State investment agencies · Research firms · Media</div>
+        <div class="micro-sm reveal" style="margin-bottom:8px; opacity:0.7;">Products</div>
+        <div class="body reveal" style="line-height:1.9;">Research subscriptions · Data exports · Dashboards · Reports · API access</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">11 / 18</div>
+  <div class="navhint">Business Model</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 12 — GO-TO-MARKET
+     ============================================================ -->
+<section class="slide" data-page="12">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Go-To-Market</h2>
+      <div class="labtag">12 — BUILD AUTHORITY BEFORE MONETISING</div>
+    </div>
+
+    <div style="display:flex; gap:56px;">
+      <div style="flex:1.1;">
+        <div class="micro reveal" style="margin-bottom:10px;">Primary growth channels</div>
+        <div style="columns:2; column-gap:40px;">
+          <div class="index-list reveal">
+            <div class="index-row"><div class="num-tag">01</div><div class="content"><div class="body">Programmatic SEO</div></div></div>
+            <div class="index-row"><div class="num-tag">02</div><div class="content"><div class="body">LinkedIn data content</div></div></div>
+            <div class="index-row"><div class="num-tag">03</div><div class="content"><div class="body">Weekly newsletter</div></div></div>
+            <div class="index-row"><div class="num-tag">04</div><div class="content"><div class="body">City-based professional communities</div></div></div>
+            <div class="index-row"><div class="num-tag">05</div><div class="content"><div class="body">Salary &amp; interview contribution loops</div></div></div>
+            <div class="index-row"><div class="num-tag">06</div><div class="content"><div class="body">Creator partnerships</div></div></div>
+            <div class="index-row"><div class="num-tag">07</div><div class="content"><div class="body">Recruiter &amp; employer partnerships</div></div></div>
+            <div class="index-row"><div class="num-tag">08</div><div class="content"><div class="body">Original reports and indexes</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1; border-left:1.5px solid var(--ink); padding-left:48px;">
+        <p class="row-headline reveal" style="margin-bottom:6px;">The WorkIndex Signal</p>
+        <div class="micro-sm reveal" style="margin-bottom:16px; opacity:0.7;">Flagship weekly newsletter</div>
+        <div class="chip-row reveal">
+          <div class="chip">New GCCs</div><div class="chip">GCC expansions</div><div class="chip">Who is hiring</div>
+          <div class="chip">Salary movement</div><div class="chip">Startup watch</div><div class="chip">Roles of the week</div>
+          <div class="chip">Company deep dive</div><div class="chip">City signal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">12 / 18</div>
+  <div class="navhint">Go-To-Market</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 13 — SEO OPPORTUNITY
+     ============================================================ -->
+<section class="slide" data-page="13">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">SEO Opportunity</h2>
+      <div class="labtag">13 — HIGH-INTENT, REPEATABLE SEARCH DEMAND</div>
+    </div>
+
+    <div class="micro reveal" style="margin-bottom:10px;">Target pages</div>
+    <div class="body reveal" style="columns:2; column-gap:40px; line-height:2.2; font-size:17px; margin-bottom:40px;">
+      [Company] salary India<br>[Company] Hyderabad salary<br>[Company] GCC India<br>[Company] interview experience<br>New GCCs in Hyderabad<br>GCC companies in Pune<br>Best GCCs for software engineers<br>Staff engineer salary Bengaluru<br>Data engineer salary Hyderabad<br>GCC versus startup<br>[Company A] versus [Company B]
+    </div>
+
+    <div class="attribution-rule reveal">
+      <p class="ed-callout" style="width:1400px;">The strategy depends on high-quality, data-rich pages — not mass-producing empty pages.</p>
+    </div>
+  </div>
+  <div class="pagenum">13 / 18</div>
+  <div class="navhint">SEO Opportunity</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 14 — DEFENSIBILITY
+     ============================================================ -->
+<section class="slide" data-page="14">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Defensibility</h2>
+      <div class="labtag">14 — THE MOAT IS THE DATA GRAPH, NOT THE UI</div>
+    </div>
+
+    <div style="display:flex; gap:56px;">
+      <div style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:10px;">Long-term defensible assets</div>
+        <div class="body reveal" style="columns:2; column-gap:28px; line-height:2.0;">
+          India-specific role taxonomy<br>Company title &amp; level mapping<br>Parent–India entity graph<br>Historical GCC launch database<br>Historical job-opening data<br>Verified compensation submissions<br>GCC mandate &amp; maturity classification<br>City-level employment indexes<br>Contributor network<br>Employer verification network<br>Brand authority via original research
+        </div>
+      </div>
+      <div style="flex:0.9; border-left:1.5px solid var(--ink); padding-left:48px;">
+        <div class="micro-sm reveal" style="margin-bottom:16px; opacity:0.7;">The system should eventually answer</div>
+        <p class="display-quote reveal" style="font-size:44px; line-height:1.3;">"Which healthcare GCCs in Hyderabad are expanding AI teams, what do they pay senior data engineers, and how strategic are those teams?"</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">14 / 18</div>
+  <div class="navhint">Defensibility</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 15 — PRODUCT ROADMAP
+     ============================================================ -->
+<section class="slide" data-page="15">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">Product Roadmap</h2>
+      <div class="labtag">15 — FOUR PHASES</div>
+    </div>
+
+    <div style="display:flex; align-items:flex-start;">
+      <div class="phase-col reveal" style="flex:1;">
+        <div class="mono-tag" style="margin-bottom:6px; opacity:0.7;">PHASE 1</div>
+        <div class="row-headline" style="margin-bottom:18px;">GCC discovery</div>
+        <div class="body" style="line-height:1.9;">GCC launch tracker<br>GCC directory<br>Company profiles<br>Three city indexes<br>Active jobs<br>News &amp; evidence</div>
+      </div>
+      <div class="phase-col reveal" style="flex:1;">
+        <div class="mono-tag" style="margin-bottom:6px; opacity:0.7;">PHASE 2</div>
+        <div class="row-headline" style="margin-bottom:18px;">Candidate intelligence</div>
+        <div class="body" style="line-height:1.9;">Salary submissions<br>Salary benchmarks<br>Role &amp; level mapping<br>Interview experiences<br>Company comparison<br>Offer evaluator</div>
+      </div>
+      <div class="phase-col reveal" style="flex:1;">
+        <div class="mono-tag" style="margin-bottom:6px; opacity:0.7;">PHASE 3</div>
+        <div class="row-headline" style="margin-bottom:18px;">Startup vertical</div>
+        <div class="body" style="line-height:1.9;">Startup profiles<br>Funding &amp; hiring signals<br>ESOP benchmarks<br>Stability indicators<br>GCC vs. startup comparison</div>
+      </div>
+      <div class="phase-col reveal" style="flex:1;">
+        <div class="mono-tag" style="margin-bottom:6px; opacity:0.7;">PHASE 4</div>
+        <div class="row-headline" style="margin-bottom:18px;">B2B intelligence</div>
+        <div class="body" style="line-height:1.9;">Employer verification<br>Recruiter dashboards<br>Compensation intelligence<br>City talent reports<br>Data exports<br>API</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">15 / 18</div>
+  <div class="navhint">Product Roadmap</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 16 — MVP
+     ============================================================ -->
+<section class="slide" data-page="16">
+  <div class="frame">
+    <div class="topbar reveal">
+      <h2 class="headline">MVP</h2>
+      <div class="labtag">16 — PUBLIC MVP TARGET</div>
+    </div>
+
+    <div style="display:flex; gap:56px;">
+      <div style="flex:1;">
+        <div style="display:flex; gap:56px; margin-bottom:32px;">
+          <div class="reveal">
+            <div class="vbig-numeral" style="font-size:110px;">300&ndash;500</div>
+            <div class="micro-sm" style="opacity:0.7;">Verified GCC profiles</div>
+          </div>
+          <div class="reveal">
+            <div class="vbig-numeral" style="font-size:110px;">5,000</div>
+            <div class="micro-sm" style="opacity:0.7;">Active jobs</div>
+          </div>
+        </div>
+        <div class="micro reveal" style="margin-bottom:10px;">MVP scope</div>
+        <div class="body reveal" style="columns:2; column-gap:28px; line-height:2.0;">
+          Bengaluru, Hyderabad, Pune<br>GCC launch &amp; expansion tracker<br>Salary contribution flow<br>Basic compensation benchmarks<br>Company saves<br>Alerts<br>Weekly newsletter<br>Admin moderation console
+        </div>
+      </div>
+      <div style="flex:0.85; border-left:1.5px solid var(--ink); padding-left:48px;">
+        <div class="micro reveal" style="margin-bottom:10px;">Success indicators</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Candidates use WorkIndex during live job searches</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Users follow companies and return through alerts</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Salary submissions grow organically</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Recruiters request benchmark access</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Employers ask to claim or correct profiles</div></div></div>
+          <div class="index-row"><div class="num-tag">—</div><div class="content"><div class="body">Media and creators cite WorkIndex data</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">16 / 18</div>
+  <div class="navhint">MVP</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 17 — WHY THIS CAN WIN
+     ============================================================ -->
+<section class="slide" data-page="17">
+  <div class="pixel-glitch reveal" style="left:0; width:56px;">
+    <div class="glitch-step" style="width:26px; margin-top:60px; opacity:0.5;"></div>
+    <div class="glitch-step" style="width:40px; margin-top:220px; opacity:0.35;"></div>
+    <div class="glitch-step" style="width:56px; margin-top:460px; opacity:0.2;"></div>
+  </div>
+  <div class="frame">
+    <div class="micro-strong reveal" style="margin-bottom:26px;">17 — WHY THIS CAN WIN</div>
+    <p class="display-manifesto reveal" style="width:1550px; margin-bottom:44px;"><em>A focused wedge with a broad expansion path.</em></p>
+
+    <div style="display:flex; gap:56px;">
+      <div style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:10px;">WorkIndex expands into</div>
+        <div class="chip-row reveal">
+          <div class="chip">Salary intelligence</div><div class="chip">Career decision support</div><div class="chip">Startup intelligence</div>
+          <div class="chip">Recruiter intelligence</div><div class="chip">Employer benchmarking</div><div class="chip">Market reports</div><div class="chip">APIs</div>
+        </div>
+        <div class="micro reveal" style="margin:26px 0 10px;">Sits at the intersection of</div>
+        <div class="chip-row reveal">
+          <div class="chip fill">Jobs</div><div class="chip fill">Compensation</div><div class="chip fill">Company intelligence</div><div class="chip fill">Market research</div><div class="chip fill">Career decisions</div>
+        </div>
+      </div>
+      <div style="flex:0.9; border-left:1.5px solid var(--ink); padding-left:48px;">
+        <div class="body reveal" style="opacity:0.85; margin-bottom:16px;">The opportunity is not to become another job portal.</div>
+        <p class="row-headline reveal" style="width:520px;">The opportunity is to become the trusted data layer for India's technology labour market.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">17 / 18</div>
+  <div class="navhint">Why This Can Win</div>
+</section>
+
+<!-- ============================================================
+     SLIDE 18 — DISCUSSION (colophon)
+     ============================================================ -->
+<section class="slide" data-page="18">
+  <div class="pixel-glitch reveal" style="left:0; width:56px;">
+    <div class="glitch-step" style="width:26px; margin-top:0;"></div>
+    <div class="glitch-step" style="width:40px; margin-top:180px;"></div>
+    <div class="glitch-step" style="width:48px; margin-top:400px; opacity:0.65;"></div>
+    <div class="glitch-step" style="width:56px; margin-top:640px; opacity:0.4;"></div>
+  </div>
+  <div class="frame">
+    <div style="display:flex; gap:64px; height:100%;">
+      <div style="flex:1;">
+        <div class="micro reveal" style="margin-bottom:16px;">Key questions for industry feedback</div>
+        <div class="index-list reveal">
+          <div class="index-row"><div class="num-tag">01</div><div class="content"><div class="body">Which GCC information is currently hardest to access?</div></div></div>
+          <div class="index-row"><div class="num-tag">02</div><div class="content"><div class="body">What signals best indicate that an India centre is strategic?</div></div></div>
+          <div class="index-row"><div class="num-tag">03</div><div class="content"><div class="body">Which salary and hiring benchmarks would be most valuable?</div></div></div>
+          <div class="index-row"><div class="num-tag">04</div><div class="content"><div class="body">What information would employers be comfortable verifying?</div></div></div>
+          <div class="index-row"><div class="num-tag">05</div><div class="content"><div class="body">What would candidates contribute in exchange for better insights?</div></div></div>
+          <div class="index-row"><div class="num-tag">06</div><div class="content"><div class="body">Which B2B users would pay for this intelligence first?</div></div></div>
+          <div class="index-row"><div class="num-tag">07</div><div class="content"><div class="body">What should WorkIndex avoid becoming?</div></div></div>
+        </div>
+      </div>
+      <div style="flex:0.9; display:flex; flex-direction:column; justify-content:flex-end; align-items:flex-end; text-align:right; border-left:1.5px solid var(--ink); padding-left:48px;">
+        <h2 class="display-closing reveal" style="margin-bottom:28px;">Discussion</h2>
+        <p class="row-headline reveal" style="width:520px; margin-bottom:24px;">We are looking for industry feedback, design partners, data partners, and early contributors.</p>
+        <div class="mono-chrome reveal">workindex.in &middot; July 2026</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum">18 / 18</div>
+  <div class="navhint">Discussion</div>
+</section>
+
+</main>
+</div>
+
+<div class="deck-controls">
+  <button class="dc-btn" id="prevBtn" title="Previous (&larr;)">&larr;</button>
+  <div class="dc-progress" id="progress">01 / 18</div>
+  <button class="dc-btn" id="nextBtn" title="Next (&rarr;)">&rarr;</button>
+</div>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   Handles stage scaling, keyboard/touch/wheel navigation, and progress.
+   =========================================== */
+class SlidePresentation {
+  constructor(){
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.currentSlide = 0;
+    this.stage = document.getElementById('deckStage');
+    this.progressEl = document.getElementById('progress');
+    this.setupStageScale();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.setupButtons();
+    this.showSlide(0);
+  }
+  setupStageScale(){
+    const scale = () => {
+      const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const x = (window.innerWidth - 1920 * factor) / 2;
+      const y = (window.innerHeight - 1080 * factor) / 2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+    };
+    scale();
+    window.addEventListener('resize', scale);
+  }
+  setupKeyboardNav(){
+    document.addEventListener('keydown', (e) => {
+      if (e.target.getAttribute && e.target.getAttribute('contenteditable') === 'true') return;
+      if (['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){ e.preventDefault(); this.next(); }
+      if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); this.prev(); }
+      if (e.key === 'Home'){ this.showSlide(0); }
+      if (e.key === 'End'){ this.showSlide(this.slides.length - 1); }
+    });
+  }
+  setupTouchNav(){
+    let startX = 0;
+    window.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, {passive:true});
+    window.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 60){ dx < 0 ? this.next() : this.prev(); }
+    }, {passive:true});
+  }
+  setupWheelNav(){
+    let locked = false;
+    window.addEventListener('wheel', (e) => {
+      if (locked) return;
+      if (Math.abs(e.deltaY) < 24) return;
+      locked = true;
+      e.deltaY > 0 ? this.next() : this.prev();
+      setTimeout(() => { locked = false; }, 500);
+    }, {passive:true});
+  }
+  setupButtons(){
+    document.getElementById('nextBtn').addEventListener('click', () => this.next());
+    document.getElementById('prevBtn').addEventListener('click', () => this.prev());
+  }
+  next(){ this.showSlide(this.currentSlide + 1); }
+  prev(){ this.showSlide(this.currentSlide - 1); }
+  showSlide(index){
+    this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+    this.slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === this.currentSlide);
+      slide.classList.toggle('visible', i === this.currentSlide);
+    });
+    this.progressEl.textContent = String(this.currentSlide + 1).padStart(2,'0') + ' / ' + this.slides.length;
+  }
+}
+const presentation = new SlidePresentation();
+
+/* ===========================================
+   INLINE EDITING
+   Hover top-left hotzone or press E to toggle. Click text to edit. Ctrl+S saves to localStorage.
+   =========================================== */
+class InlineEditor {
+  constructor(){
+    this.isActive = false;
+    this.storageKey = 'workindex-deck-edits';
+    this.toggleBtn = document.getElementById('editToggle');
+    this.banner = document.getElementById('editBanner');
+    this.hotzone = document.getElementById('editHotzone');
+    this.editableSelector = 'h1, h2, p, .body, .row-headline, .table-name, .micro, .micro-sm, .micro-strong, .mono-tag, .mono-chrome, .chip, .display-hero, .display-manifesto, .display-quote, .display-closing, .ed-callout';
+    this.bindHotzone();
+    this.bindToggle();
+    this.bindKeyboard();
+    this.restore();
+  }
+  bindHotzone(){
+    let hideTimeout = null;
+    this.hotzone.addEventListener('mouseenter', () => { clearTimeout(hideTimeout); this.toggleBtn.classList.add('show'); });
+    this.hotzone.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!this.isActive) this.toggleBtn.classList.remove('show'); }, 400); });
+    this.toggleBtn.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+    this.toggleBtn.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!this.isActive) this.toggleBtn.classList.remove('show'); }, 400); });
+    this.hotzone.addEventListener('click', () => this.toggleEditMode());
+  }
+  bindToggle(){ this.toggleBtn.addEventListener('click', () => this.toggleEditMode()); }
+  bindKeyboard(){
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'e' || e.key === 'E') && !(e.target.getAttribute && e.target.getAttribute('contenteditable'))) this.toggleEditMode();
+      if ((e.ctrlKey || e.metaKey) && e.key === 's'){ e.preventDefault(); this.save(); }
+    });
+  }
+  toggleEditMode(){
+    this.isActive = !this.isActive;
+    this.toggleBtn.classList.toggle('active', this.isActive);
+    this.toggleBtn.classList.toggle('show', this.isActive);
+    this.banner.classList.toggle('show', this.isActive);
+    document.querySelectorAll(this.editableSelector).forEach(el => {
+      el.setAttribute('contenteditable', this.isActive ? 'true' : 'false');
+    });
+    if (!this.isActive) this.save();
+  }
+  save(){
+    const data = {};
+    document.querySelectorAll('[data-page]').forEach(slide => {
+      data[slide.dataset.page] = slide.innerHTML;
+    });
+    try { localStorage.setItem(this.storageKey, JSON.stringify(data)); } catch(e) {}
+  }
+  restore(){
+    try {
+      const raw = localStorage.getItem(this.storageKey);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      document.querySelectorAll('[data-page]').forEach(slide => {
+        if (data[slide.dataset.page]) slide.innerHTML = data[slide.dataset.page];
+      });
+    } catch(e) {}
+  }
+}
+new InlineEditor();
+</script>
+</body>
+</html>

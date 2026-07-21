@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India's Premium Regional Food Opportunity — Market Entry Strategy</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap">
+
+<style>
+/* ===========================================
+   DESIGN TOKENS — "House of Regional Indian Cuisine"
+   Espresso dark + warm paper, terracotta / turmeric gold accents.
+   Sandwich structure: dark for title/anchor/quote slides, paper for dense content.
+   =========================================== */
+:root{
+  --espresso-950:#180F0A;
+  --espresso-900:#20140D;
+  --espresso-800:#2B1C13;
+  --espresso-700:#3A2718;
+  --espresso-line:rgba(232,186,138,0.16);
+  --espresso-line-strong:rgba(232,186,138,0.28);
+  --cream:#F4E9DA;
+  --cream-2:#C9B49C;
+  --cream-3:#8F7B68;
+
+  --paper:#FAF8F4;
+  --paper-2:#F1EBE0;
+  --paper-line:rgba(43,28,19,0.10);
+  --paper-line-strong:rgba(43,28,19,0.20);
+  --ink:#241611;
+  --ink-2:#5B4B3E;
+  --ink-3:#8C7A6B;
+  --ink-4:#B4A492;
+
+  --terracotta:#B8532E;
+  --terracotta-deep:#8F3D1F;
+  --terracotta-soft:rgba(184,83,46,0.12);
+  --gold:#C9962B;
+  --gold-soft:rgba(201,150,43,0.14);
+  --sage:#6F7A5C;
+
+  --f-display:'Fraunces', Georgia, serif;
+  --f-body:'Switzer', sans-serif;
+  --f-mono:'JetBrains Mono', ui-monospace, monospace;
+
+  --edge:76px;
+  --pad-top:104px;
+  --pad-bottom:96px;
+  --gap-lg:40px;
+  --gap-md:26px;
+  --gap-sm:16px;
+
+  --stage-bg:var(--espresso-950);
+  --slide-bg:var(--paper);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-normal: 0.6s;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--espresso-950);}
+
+/* --- viewport-base.css (mandatory fixed-stage rules) --- */
+html, body { width:100%; height:100%; margin:0; overflow:hidden; background:var(--stage-bg,#000); }
+.deck-viewport { position:fixed; inset:0; overflow:hidden; background:var(--stage-bg,#000); }
+.deck-stage { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:hidden; transform-origin:0 0; background:var(--slide-bg,#fff); }
+.slide { position:absolute; inset:0; width:1920px; height:1080px; overflow:hidden; display:block; visibility:hidden; opacity:0; pointer-events:none; background:var(--slide-bg,#fff); }
+.slide.active, .slide.visible { visibility:visible; opacity:1; pointer-events:auto; z-index:1; }
+img, video, canvas, svg { max-width:100%; max-height:100%; }
+.deck-controls { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:1000; }
+@media print {
+  html, body { width:1920px; height:auto; overflow:visible; background:#fff; }
+  .deck-viewport { position:static; overflow:visible; background:#fff; }
+  .deck-stage { position:static; width:auto; height:auto; transform:none !important; background:none; }
+  .slide { position:relative; display:block !important; visibility:visible !important; opacity:1 !important; pointer-events:auto !important; width:1920px; height:1080px; break-after:page; page-break-after:always; }
+  .slide:last-child { break-after:auto; page-break-after:auto; }
+  .deck-controls { display:none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.2s !important; }
+}
+/* --- end viewport-base.css --- */
+
+/* ===========================================
+   SLIDE SURFACES — dark (anchor) vs paper (content)
+   =========================================== */
+.slide{ font-family:var(--f-body); }
+.slide.dark{
+  color:var(--cream);
+  background-color:var(--espresso-950);
+  background-image:
+    repeating-linear-gradient(135deg, rgba(232,186,138,0.035) 0px, rgba(232,186,138,0.035) 1px, transparent 1px, transparent 14px),
+    radial-gradient(ellipse 1100px 650px at 85% -8%, rgba(184,83,46,0.20), transparent 60%),
+    radial-gradient(ellipse 900px 600px at 0% 108%, rgba(201,150,43,0.12), transparent 55%);
+}
+.slide.light{
+  color:var(--ink);
+  background-color:var(--paper);
+  background-image: radial-gradient(var(--paper-line) 1.4px, transparent 1.4px);
+  background-size: 32px 32px;
+}
+
+/* ===========================================
+   CHROME
+   =========================================== */
+.frame{
+  position:absolute;
+  top:var(--pad-top); left:var(--edge); right:var(--edge); bottom:var(--pad-bottom);
+  display:flex; flex-direction:column;
+}
+.fill{ flex:1 1 auto; min-height:0; }
+.footer-row{
+  position:absolute; left:var(--edge); right:var(--edge); bottom:38px;
+  display:flex; align-items:center; justify-content:space-between;
+  font-family:var(--f-mono); font-size:12px; letter-spacing:0.06em;
+}
+.dark .footer-row{ color:var(--cream-3); }
+.light .footer-row{ color:var(--ink-4); }
+.footer-row .dot{ color:var(--terracotta); margin:0 8px; }
+.wordmark{ display:flex; align-items:center; gap:10px; }
+.wordmark .sq{ width:6px; height:6px; border-radius:50%; background:var(--terracotta); display:inline-block; }
+
+/* ===========================================
+   TYPE SCALE
+   =========================================== */
+.t-hero{ font-family:var(--f-display); font-weight:500; font-size:118px; line-height:0.98; letter-spacing:-0.01em; }
+.t-display{ font-family:var(--f-display); font-weight:500; font-size:82px; line-height:1.02; letter-spacing:-0.005em; }
+.t-headline{ font-family:var(--f-display); font-weight:500; font-size:54px; line-height:1.12; letter-spacing:-0.005em; }
+.t-headline-lg{ font-family:var(--f-display); font-weight:500; font-size:64px; line-height:1.08; letter-spacing:-0.005em; }
+.t-sub{ font-family:var(--f-body); font-weight:500; font-size:24px; line-height:1.5; }
+.t-lede{ font-family:var(--f-body); font-weight:500; font-size:27px; line-height:1.48; }
+.t-body{ font-family:var(--f-body); font-weight:400; font-size:17px; line-height:1.55; }
+.t-kicker{ font-family:var(--f-mono); font-weight:500; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--terracotta); }
+.t-label{ font-family:var(--f-body); font-weight:600; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; }
+.dark .t-label{ color:var(--cream-2); }
+.light .t-label{ color:var(--ink-3); }
+.t-quote{ font-family:var(--f-display); font-style:italic; font-weight:400; }
+
+/* ===========================================
+   TOPBAR
+   =========================================== */
+.topbar{ flex:0 0 auto; display:flex; align-items:flex-start; justify-content:space-between; gap:40px; margin-bottom:var(--gap-lg); padding-bottom:24px; }
+.light .topbar{ border-bottom:1px solid var(--paper-line-strong); }
+.dark .topbar{ border-bottom:1px solid var(--espresso-line-strong); }
+.topbar .kicker{ display:block; margin-bottom:14px; }
+.topbar .slug{ font-family:var(--f-mono); font-size:12px; letter-spacing:0.08em; padding-top:4px; flex-shrink:0; white-space:nowrap; }
+.light .topbar .slug{ color:var(--ink-4); }
+.dark .topbar .slug{ color:var(--cream-3); }
+
+/* ===========================================
+   COMPONENTS
+   =========================================== */
+.card{ border-radius:14px; padding:28px 30px; }
+.light .card{ background:var(--surface,#fff); background:#FFFFFF; border:1px solid var(--paper-line-strong); box-shadow:0 20px 40px -30px rgba(43,28,19,0.25); }
+.dark .card{ background:var(--espresso-800); border:1px solid var(--espresso-line-strong); }
+
+.tag{
+  display:inline-flex; align-items:center; gap:8px; flex-shrink:0; white-space:nowrap;
+  font-family:var(--f-mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase;
+  border-radius:100px; padding:7px 13px;
+}
+.light .tag{ color:var(--terracotta-deep); background:var(--terracotta-soft); border:1px solid rgba(184,83,46,0.3); }
+.dark .tag{ color:var(--gold); background:var(--gold-soft); border:1px solid rgba(201,150,43,0.35); }
+
+/* Index list */
+.index-list{ display:flex; flex-direction:column; }
+.index-row{ display:grid; grid-template-columns:52px 1fr; gap:22px; padding:17px 0; align-items:start; }
+.light .index-row{ border-bottom:1px solid var(--paper-line); }
+.dark .index-row{ border-bottom:1px solid var(--espresso-line); }
+.index-row:last-child{ border-bottom:none; }
+.index-row .num{ font-family:var(--f-mono); font-size:13px; color:var(--terracotta); padding-top:4px; }
+.dark .index-row .num{ color:var(--gold); }
+.index-row .head{ font-family:var(--f-body); font-weight:700; font-size:19px; margin-bottom:3px; }
+.index-row .sub{ font-family:var(--f-body); font-size:14px; }
+.light .index-row .sub{ color:var(--ink-3); }
+.dark .index-row .sub{ color:var(--cream-3); }
+
+/* Card grid (segments, modules, divisions) */
+.card-grid{ display:grid; gap:18px; grid-auto-rows:min-content; align-content:start; }
+.grid-cols-2{ grid-template-columns:repeat(2,1fr); }
+.grid-cols-3{ grid-template-columns:repeat(3,1fr); }
+.grid-cols-4{ grid-template-columns:repeat(4,1fr); }
+
+.seg-card{ border-radius:14px; padding:24px 24px; display:flex; flex-direction:column; gap:12px; }
+.light .seg-card{ background:#fff; border:1px solid var(--paper-line-strong); box-shadow:0 18px 36px -28px rgba(43,28,19,0.22); }
+.dark .seg-card{ background:var(--espresso-800); border:1px solid var(--espresso-line-strong); }
+.seg-card .si{ font-family:var(--f-mono); font-size:12px; }
+.light .seg-card .si{ color:var(--terracotta); }
+.dark .seg-card .si{ color:var(--gold); }
+.seg-card h4{ font-family:var(--f-display); font-weight:500; font-size:24px; line-height:1.15; }
+.seg-card .tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:2px; }
+.seg-chip{ font-family:var(--f-body); font-size:12px; font-weight:500; padding:5px 10px; border-radius:100px; }
+.light .seg-chip{ background:var(--paper-2); color:var(--ink-2); }
+.dark .seg-chip{ background:var(--espresso-700); color:var(--cream-2); }
+.seg-card .note{ font-family:var(--f-body); font-size:13px; font-style:italic; }
+.light .seg-card .note{ color:var(--terracotta-deep); }
+.dark .seg-card .note{ color:var(--gold); }
+
+/* Stat rows (market size) */
+.stat-rows{ display:flex; flex-direction:column; gap:0; }
+.stat-row{ display:grid; grid-template-columns:340px 1fr 260px; align-items:center; gap:24px; padding:18px 0; }
+.light .stat-row{ border-bottom:1px solid var(--paper-line); }
+.dark .stat-row{ border-bottom:1px solid var(--espresso-line); }
+.stat-row:last-child{ border-bottom:none; }
+.stat-row .sr-label{ font-family:var(--f-body); font-weight:600; font-size:18px; }
+.sr-bar-track{ height:10px; border-radius:6px; overflow:hidden; }
+.light .sr-bar-track{ background:var(--paper-2); }
+.dark .sr-bar-track{ background:var(--espresso-700); }
+.sr-bar-fill{ height:100%; border-radius:6px; background:linear-gradient(90deg, var(--terracotta), var(--gold)); }
+.stat-row .sr-value{ font-family:var(--f-display); font-weight:500; font-size:24px; text-align:right; }
+
+/* Workflow / phase flow */
+.flow-row{ display:flex; align-items:stretch; gap:0; }
+.flow-node{ flex:1; border-radius:14px; padding:22px 18px; display:flex; flex-direction:column; gap:8px; justify-content:center; min-height:126px; }
+.light .flow-node{ background:#fff; border:1px solid var(--paper-line-strong); box-shadow:0 16px 32px -28px rgba(43,28,19,0.2); }
+.dark .flow-node{ background:var(--espresso-800); border:1px solid var(--espresso-line-strong); }
+.flow-node .n{ font-family:var(--f-mono); font-size:11px; }
+.light .flow-node .n{ color:var(--terracotta); }
+.dark .flow-node .n{ color:var(--gold); }
+.flow-node .label{ font-family:var(--f-body); font-weight:700; font-size:17px; line-height:1.2; }
+.flow-node .sub{ font-family:var(--f-body); font-size:12px; }
+.light .flow-node .sub{ color:var(--ink-3); }
+.dark .flow-node .sub{ color:var(--cream-3); }
+.flow-arrow{ display:flex; align-items:center; justify-content:center; width:34px; flex-shrink:0; font-family:var(--f-mono); font-size:17px; }
+.light .flow-arrow{ color:var(--ink-4); }
+.dark .flow-arrow{ color:var(--cream-3); }
+
+/* Split */
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gap-lg); align-items:start; align-content:center; }
+.split-divider{ padding-left:var(--gap-lg); }
+.light .split-divider{ border-left:1px solid var(--paper-line-strong); }
+.dark .split-divider{ border-left:1px solid var(--espresso-line-strong); }
+
+/* Pull quote block */
+.pull-quote{ font-family:var(--f-display); font-style:italic; font-weight:400; font-size:44px; line-height:1.35; }
+.pull-quote .muted{ opacity:0.55; }
+.pull-quote .accent{ font-style:normal; font-weight:500; color:var(--gold); }
+.light .pull-quote .accent{ color:var(--terracotta); }
+
+/* Reveal animation */
+.reveal{ opacity:0; transform:translateY(22px); transition:opacity var(--duration-normal) var(--ease-out-expo), transform var(--duration-normal) var(--ease-out-expo); }
+.slide.visible .reveal{ opacity:1; transform:translateY(0); }
+.reveal:nth-child(1){ transition-delay:0.05s; }
+.reveal:nth-child(2){ transition-delay:0.12s; }
+.reveal:nth-child(3){ transition-delay:0.19s; }
+.reveal:nth-child(4){ transition-delay:0.26s; }
+.reveal:nth-child(5){ transition-delay:0.33s; }
+
+/* ===========================================
+   NOTES PANEL
+   =========================================== */
+.notes-panel{
+  position:fixed; left:0; right:0; bottom:0; max-height:38vh; overflow:auto;
+  background:var(--terracotta-deep); color:#fff;
+  font-family:var(--f-body); font-size:16px; line-height:1.55; padding:26px 48px;
+  transform:translateY(100%); transition:transform 0.3s var(--ease-out-expo); z-index:5000;
+}
+.notes-panel.show{ transform:translateY(0); }
+.notes-panel .nk{ font-family:var(--f-mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; opacity:0.75; margin-bottom:10px; }
+.notes-panel strong{ font-weight:700; }
+
+/* Deck controls */
+.deck-controls{ display:flex; gap:10px; align-items:center; background:rgba(143,61,31,0.94); color:#fff; padding:8px 14px; font-family:var(--f-mono); font-size:12px; letter-spacing:0.05em; border-radius:100px; }
+.deck-controls button{ background:transparent; border:1px solid #fff; color:#fff; font-family:var(--f-mono); font-size:12px; padding:6px 12px; cursor:pointer; border-radius:100px; }
+.deck-controls button:hover{ background:#fff; color:var(--terracotta-deep); }
+.deck-controls .sep{ opacity:0.5; }
+
+/* Edit affordance */
+.edit-hotzone{ position:fixed; top:0; left:0; width:80px; height:80px; z-index:10000; cursor:pointer; }
+.edit-toggle{ position:fixed; top:14px; left:14px; z-index:10001; background:var(--terracotta-deep); color:#fff; border:1px solid #fff; font-family:var(--f-mono); font-size:16px; width:38px; height:38px; border-radius:10px; opacity:0; pointer-events:none; transition:opacity 0.3s ease; cursor:pointer; }
+.edit-toggle.show, .edit-toggle.active{ opacity:1; pointer-events:auto; }
+[contenteditable="true"]{ outline:1px dashed var(--terracotta); outline-offset:4px; border-radius:4px; }
+</style>
+</head>
+<body>
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+<!-- =========================================================
+     SLIDE 01 — TITLE
+     ========================================================= -->
+<section class="slide dark active" data-notes="Main argument: this deck frames the report's central reframe up front — the opportunity is not generic Ready-to-Eat, it is building India's first Premium Regional Food Company. Evidence/assumption: this is the report's stated opinion, not yet tested with consumers or capital. Discussion question: does 'House of Regional Indian Cuisine' land as a category-defining idea, or does it need sharper proof points before it convinces? Transition: next slide unpacks the opinion in full — what consumers are actually buying.">
+  <div class="frame" style="justify-content:center;">
+    <span class="reveal t-kicker" style="margin-bottom:26px;">Market Entry Strategy &amp; Business Opportunity Report — 22 July 2026</span>
+    <h1 class="reveal t-hero" style="max-width:1600px; margin-bottom:24px;">India's Premium<br>Regional Food Opportunity</h1>
+    <p class="reveal t-lede" style="max-width:1200px; color:var(--cream-2); margin-bottom:10px;">Ready-to-Eat &amp; High-Protein Convenience Foods</p>
+    <p class="reveal t-sub" style="color:var(--cream-3); max-width:1100px;">Focus: Premium South Indian Cuisine &nbsp;·&nbsp; Kerala Ethnic Foods &nbsp;·&nbsp; Meat &amp; Vegetable Jerky</p>
+  </div>
+  <div class="footer-row">
+    <div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div>
+    <div>01<span class="dot">·</span>22</div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 02 — OUR OPINION
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: the report's core opinion — this is one of the most attractive consumer opportunities in India this decade, but only if it's built as a premium regional cuisine platform, not a generic RTE brand. Evidence/assumption: this is a strategic opinion from the report's authors, not a market-tested claim; the six 'what consumers are buying' items are the report's framing, not survey data. Discussion question: which of the six — Time, Trust, Authenticity, Health, Premium Experience, Consistency — is hardest to actually deliver at scale? Transition: next slide grounds this opinion in the underlying market size.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Executive summary — our opinion</span>
+        <h2 class="t-headline-lg" style="max-width:1500px;">One of the most attractive consumer businesses India will witness this decade</h2>
+      </div>
+      <span class="slug">02 — OPINION</span>
+    </div>
+    <div class="reveal fill" style="display:flex; align-items:center; gap:64px;">
+      <div style="flex:0 0 560px;">
+        <p class="t-lede" style="color:var(--cream-2); margin-bottom:20px;">The opportunity is <em style="font-style:italic; color:var(--cream-3);">not</em> "Ready-to-Eat Food."</p>
+        <p class="t-lede" style="color:var(--cream); margin-bottom:20px;">It is becoming India's first <span style="color:var(--gold);">Premium Regional Food Company</span> — delivering restaurant-quality authentic regional cuisine through modern food technology.</p>
+        <p class="t-body" style="color:var(--cream-3);">Recommendation: don't build another MTR, Haldiram, or ITC clone. Build the "House of Regional Indian Cuisine," beginning with Kerala and South Indian foods.</p>
+      </div>
+      <div style="flex:1;">
+        <div class="t-label" style="margin-bottom:16px;">Consumers are no longer buying convenience alone. They are buying —</div>
+        <div class="card-grid grid-cols-3">
+          <div class="card" style="text-align:center; padding:26px 18px;"><div class="t-headline" style="font-size:26px; color:var(--gold);">Time</div></div>
+          <div class="card" style="text-align:center; padding:26px 18px;"><div class="t-headline" style="font-size:26px; color:var(--gold);">Trust</div></div>
+          <div class="card" style="text-align:center; padding:26px 18px;"><div class="t-headline" style="font-size:26px; color:var(--gold);">Authenticity</div></div>
+          <div class="card" style="text-align:center; padding:26px 18px;"><div class="t-headline" style="font-size:26px; color:var(--gold);">Health</div></div>
+          <div class="card" style="text-align:center; padding:26px 18px;"><div class="t-headline" style="font-size:22px; color:var(--gold);">Premium Experience</div></div>
+          <div class="card" style="text-align:center; padding:26px 18px;"><div class="t-headline" style="font-size:26px; color:var(--gold);">Consistency</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>02<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 03 — MARKET SIZE & OPPORTUNITY
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the addressable market is layered — a $600B+ food processing industry containing a fast-growing but still small $1-1.3B RTE segment, with quick commerce (>40% annual growth) as the accelerant. Evidence/assumption: figures are the report's own 2025-26 estimates; source methodology isn't specified in the document, so treat as directional industry sizing, not audited data. Discussion question: which of these five categories is the right one to actually be measured against in year one? Transition: next slide explains why this market is growing right now, not just why it's large.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Market size &amp; opportunity</span>
+        <h2 class="t-headline-lg">A large, fast-growing, still-underdeveloped market</h2>
+      </div>
+      <span class="slug">03 — MARKET SIZE</span>
+    </div>
+    <div class="reveal fill" style="display:flex; flex-direction:column; justify-content:center; gap:8px;">
+      <div class="stat-rows">
+        <div class="stat-row"><span class="sr-label">Indian Food Processing</span><div class="sr-bar-track"><div class="sr-bar-fill" style="width:100%;"></div></div><span class="sr-value">US$600+ Billion</span></div>
+        <div class="stat-row"><span class="sr-label">Packaged Food</span><div class="sr-bar-track"><div class="sr-bar-fill" style="width:82%;"></div></div><span class="sr-value">US$75&ndash;85 Billion</span></div>
+        <div class="stat-row"><span class="sr-label">Frozen Food</span><div class="sr-bar-track"><div class="sr-bar-fill" style="width:14%;"></div></div><span class="sr-value">US$2+ Billion</span></div>
+        <div class="stat-row"><span class="sr-label">Ready to Eat</span><div class="sr-bar-track"><div class="sr-bar-fill" style="width:9%;"></div></div><span class="sr-value">US$1&ndash;1.3 Billion</span></div>
+        <div class="stat-row"><span class="sr-label">Ready to Cook</span><div class="sr-bar-track"><div class="sr-bar-fill" style="width:6%;"></div></div><span class="sr-value">US$700+ Million</span></div>
+      </div>
+    </div>
+    <div class="reveal card" style="flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:28px;">
+      <p class="t-lede" style="margin:0;">Quick Commerce Food Sales are <span style="color:var(--terracotta);">growing &gt;40% annually</span> in major cities — the distribution accelerant underneath all five categories.</p>
+      <span class="tag">2025&ndash;26 estimates</span>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>03<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 04 — WHY IS THIS GROWING
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the RTE opportunity is downstream of a real demographic shift in Indian households — dual incomes, distance from home, and time scarcity — not a manufactured trend. Evidence/assumption: this is a qualitative societal narrative from the report, not backed by cited demographic statistics in the document. Discussion question: which of these five shifts is most true in the specific city/segment we'd launch in first? Transition: next slide shows how consumer expectations have evolved in step with this shift.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Why is this industry growing</span>
+        <h2 class="t-headline-lg">Because India itself is changing</h2>
+      </div>
+      <span class="slug">04 — CONTEXT</span>
+    </div>
+    <div class="reveal fill split">
+      <div>
+        <div class="t-label" style="margin-bottom:18px;">Twenty years ago</div>
+        <div class="index-list">
+          <div class="index-row"><span class="num">·</span><div class="head" style="font-weight:500;">Mothers stayed home.</div></div>
+          <div class="index-row" style="border-bottom:none;"><span class="num">·</span><div class="head" style="font-weight:500;">Meals were cooked fresh.</div></div>
+        </div>
+      </div>
+      <div class="split-divider">
+        <div class="t-label" style="margin-bottom:18px;">Today</div>
+        <div class="index-list">
+          <div class="index-row"><span class="num">·</span><div class="head" style="font-weight:500;">Both husband and wife work.</div></div>
+          <div class="index-row"><span class="num">·</span><div class="head" style="font-weight:500;">Children eat separately.</div></div>
+          <div class="index-row"><span class="num">·</span><div class="head" style="font-weight:500;">Working professionals travel.</div></div>
+          <div class="index-row"><span class="num">·</span><div class="head" style="font-weight:500;">Students live away from home.</div></div>
+          <div class="index-row" style="border-bottom:none;"><span class="num">·</span><div class="head" style="font-weight:500;">People order food online.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal card" style="flex:0 0 auto; text-align:center; padding:36px;">
+      <p class="pull-quote" style="font-size:32px; color:var(--ink);">"I want home food<span class="accent"> without cooking</span>."<br><span style="font-size:20px; opacity:0.65;">— that is exactly where Ready-to-Eat fits.</span></p>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>04<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 05 — CONSUMER EVOLUTION
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: Indian consumers have moved through four generations of purchase logic, and the fourth — premium authenticity — is where the pricing power and margin actually live. Evidence/assumption: this generational framework is the report's own model, not a cited academic or survey source. Discussion question: is our target beachhead audience actually in generation 4 today, or are we betting on them moving there? Transition: next slide shows exactly where that premium-authenticity demand is currently unmet — the white space.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Consumer evolution</span>
+        <h2 class="t-headline-lg">The fourth generation is where the money is</h2>
+      </div>
+      <span class="slug">05 — CONSUMER</span>
+    </div>
+    <div class="reveal fill" style="display:flex; flex-direction:column; justify-content:center;">
+    <div class="flow-row" style="align-items:stretch;">
+      <div class="flow-node"><span class="n">GEN 1</span><span class="label">Price Sensitive</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="n">GEN 2</span><span class="label">Convenience Seeking</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="n">GEN 3</span><span class="label">Experience Seeking</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="background:linear-gradient(180deg, rgba(201,150,43,0.22), var(--espresso-800)); border-color:rgba(201,150,43,0.5);"><span class="n" style="color:var(--gold);">GEN 4</span><span class="label" style="color:var(--gold);">Premium Authenticity</span></div>
+    </div>
+    </div>
+    <div class="reveal" style="flex:0 0 auto; text-align:center; padding-top:12px;">
+      <p class="pull-quote" style="font-size:36px;">Consumers no longer compare you to another RTE brand.<br>They ask <span class="accent">"Can this replace my mother's food?"</span></p>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>05<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 06 — THE BIG WHITE SPACE
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: nearly every scaled Indian RTE brand owns North Indian staples; almost none own premium South Indian regional cuisine, and that gap is large enough to be a platform, not a product line. Evidence/assumption: 'very few companies own premium South Indian regional cuisine' is a competitive-landscape claim from the report, not a documented market-share analysis. Discussion question: which single dish on this white-space list would make the strongest hero SKU to prove the thesis first? Transition: next slide reframes what building in this white space actually means strategically.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">The big white space</span>
+        <h2 class="t-headline-lg">North Indian is owned. South Indian regional cuisine is not.</h2>
+      </div>
+      <span class="slug">06 — WHITE SPACE</span>
+    </div>
+    <div class="reveal fill split">
+      <div>
+        <div class="t-label" style="margin-bottom:18px;">Current brands dominate</div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <span class="seg-chip">Rajma</span><span class="seg-chip">Dal</span><span class="seg-chip">Chole</span><span class="seg-chip">Paneer</span><span class="seg-chip">Pav Bhaji</span><span class="seg-chip">Biryani</span>
+        </div>
+      </div>
+      <div class="split-divider">
+        <div class="t-label" style="margin-bottom:18px; color:var(--terracotta);">The open white space</div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Kerala Chicken Curry</span>
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Malabar Fish Curry</span>
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Ghee Rice</span>
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Chicken Roast</span>
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Beef Roast*</span>
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Prawn Curry</span>
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Duck Roast</span>
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Avial</span>
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Puttu</span>
+          <span class="seg-chip" style="background:var(--terracotta-soft); color:var(--terracotta-deep); font-weight:600;">Kadala Curry</span>
+        </div>
+        <p class="t-body" style="margin-top:16px; color:var(--ink-3); font-size:13px;">*Where legally permissible / for export</p>
+      </div>
+    </div>
+    <div class="reveal" style="flex:0 0 auto; border-top:1px solid var(--paper-line-strong); padding-top:24px;">
+      <p class="t-lede">This is not just a product portfolio. It is <span style="color:var(--terracotta);">a cuisine platform.</span></p>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>06<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 07 — THE REAL OPPORTUNITY
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: reframing the business from 'selling Ready-to-Eat' to 'exporting Kerala to the world' changes the competitive set, pricing power, and brand latitude. Evidence/assumption: the four downstream consequences (fewer competitors, better pricing, stronger branding, expanded export opportunity) are the report's stated logic, not measured outcomes. Discussion question: if we adopt this frame internally, what's the first decision it should actually change — pricing, packaging, or which market we launch in? Transition: next slide breaks down exactly who this reframed business serves.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">The real opportunity</span>
+        <h2 class="t-headline-lg">Don't think Ready-to-Eat. Think exporting Kerala to the world.</h2>
+      </div>
+      <span class="slug">07 — REFRAME</span>
+    </div>
+    <div class="reveal fill split" style="align-items:stretch;">
+      <div class="card" style="padding:40px;">
+        <div class="t-label" style="margin-bottom:18px;">Don't think</div>
+        <p class="t-headline" style="font-size:34px; color:var(--cream-3);">"I am selling<br>Ready-to-Eat."</p>
+      </div>
+      <div class="card" style="padding:40px; border-color:rgba(201,150,43,0.5); background:linear-gradient(180deg, rgba(201,150,43,0.14), var(--espresso-800) 65%);">
+        <div class="t-label" style="margin-bottom:18px; color:var(--gold);">Think</div>
+        <p class="t-headline" style="font-size:34px; color:var(--gold);">"I am exporting<br>Kerala to the world."</p>
+      </div>
+    </div>
+    <div class="reveal" style="flex:0 0 auto; margin-top:26px; display:flex; flex-wrap:wrap; gap:12px;">
+      <span class="tag">Fewer competitors</span>
+      <span class="tag">Better pricing</span>
+      <span class="tag">Stronger branding</span>
+      <span class="tag">Expanded export opportunity</span>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>07<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 08 — MARKET SEGMENTATION
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: seven distinct segments exist with different needs and margin profiles — urban professionals are the volume base, NRIs are likely the highest-margin segment, and fitness is a segment that barely exists as a category yet in India. Evidence/assumption: segment sizing and margin ranking ('largest opportunity', 'possibly highest margin') are the report's qualitative judgment, not quantified research. Discussion question: which two segments should the first 12 months actually be built for, given the beachhead is South India? Transition: next slide shows the product strategy built to serve these segments without overextending into 60 SKUs.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Market segmentation</span>
+        <h2 class="t-headline-lg">Seven segments, one canonical product line</h2>
+      </div>
+      <span class="slug">08 — SEGMENTS</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-4" style="padding-top:6px;">
+      <div class="seg-card"><span class="si">01</span><h4>Urban Professionals</h4><p class="note">Largest opportunity</p><div class="tags"><span class="seg-chip">Breakfast</span><span class="seg-chip">Lunch</span><span class="seg-chip">Dinner</span><span class="seg-chip">Late-night</span></div></div>
+      <div class="seg-card"><span class="si">02</span><h4>Students</h4><div class="tags"><span class="seg-chip">Affordable</span><span class="seg-chip">Long shelf life</span><span class="seg-chip">Microwave-friendly</span></div></div>
+      <div class="seg-card"><span class="si">03</span><h4>Fitness</h4><p class="note">Hardly exists today — huge opportunity</p><div class="tags"><span class="seg-chip">Protein</span><span class="seg-chip">Low carb</span><span class="seg-chip">Jerky</span><span class="seg-chip">Protein bowls</span></div></div>
+      <div class="seg-card"><span class="si">04</span><h4>Senior Citizens</h4><div class="tags"><span class="seg-chip">Home-style</span><span class="seg-chip">Less spice</span><span class="seg-chip">Small portions</span></div></div>
+      <div class="seg-card"><span class="si">05</span><h4>Travel</h4><div class="tags"><span class="seg-chip">Railways</span><span class="seg-chip">Airport retail</span><span class="seg-chip">Highway retail</span><span class="seg-chip">Hotels</span></div></div>
+      <div class="seg-card"><span class="si">06</span><h4>Corporate Pantry</h4><p class="note">One of the biggest B2B opportunities</p></div>
+      <div class="seg-card"><span class="si">07</span><h4>NRIs</h4><p class="note">Possibly the highest-margin segment</p><div class="tags"><span class="seg-chip">Middle East</span><span class="seg-chip">UK</span><span class="seg-chip">USA</span><span class="seg-chip">Canada</span><span class="seg-chip">Australia</span><span class="seg-chip">Singapore</span></div></div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>08<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 09 — PRODUCT STRATEGY
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: discipline beats breadth at launch — 12 hero products across four lines is enough to prove the thesis without the operational drag of 60 SKUs. Evidence/assumption: '12 Hero Products' is a strategic recommendation, not a validated optimal count. Discussion question: if we had to cut this list to 6 SKUs for a pilot, which 6 would carry the brand promise best? Transition: next slide zooms into one specific line — jerky — and argues it deserves outsized attention.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Product strategy</span>
+        <h2 class="t-headline-lg">12 Hero Products. Not 60 SKUs.</h2>
+      </div>
+      <span class="slug">09 — PRODUCT</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-4" style="padding-top:6px;">
+      <div class="seg-card"><span class="si">RICE</span><h4 style="font-size:20px;">Premium Rice</h4><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Ghee Rice</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Jeera Rice</div></div></div></div>
+      <div class="seg-card"><span class="si">CURRIES</span><h4 style="font-size:20px;">Premium Curries</h4><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Kerala Chicken Curry</div></div><div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Malabar Chicken Curry</div></div><div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Fish Curry</div></div><div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Prawn Curry</div></div><div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Chicken Roast</div></div><div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Mutton Curry</div></div></div></div>
+      <div class="seg-card"><span class="si">VEG</span><h4 style="font-size:20px;">Vegetarian</h4><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Avial</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Vegetable Kurma</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Sambar</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Kadala Curry</div></div></div></div>
+      <div class="seg-card"><span class="si">SNACKS</span><h4 style="font-size:20px;">Premium Snacks</h4><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Chicken Jerky</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Fish Jerky</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Mushroom Jerky</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Jackfruit Jerky</div></div></div></div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>09<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 10 — WHY JERKY
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: India has followed the West's protein-product adoption curve through powders, bars, cookies, and chips — meat/veg jerky is the plausible next wave, and it's nearly uncontested in India today. Evidence/assumption: the ₹500-1,000 crore category-size figure is the report's own projection framed explicitly as conditional ('if executed correctly'), requiring sustained consumer education — label it as a projection, not a forecast. Discussion question: which single use case (gym, travel, military, export) would you target first to prove jerky demand cheaply? Transition: next slide moves from product to geography — where this whole strategy should launch first.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Why jerky may become the next big category</span>
+        <h2 class="t-headline-lg">India has followed the West's protein curve — jerky is next</h2>
+      </div>
+      <span class="slug">10 — JERKY</span>
+    </div>
+    <div class="reveal fill" style="display:flex; align-items:center; gap:60px;">
+      <div style="flex:0 0 640px;">
+        <div class="flow-row" style="flex-direction:column; gap:10px;">
+          <div class="flow-node" style="min-height:auto; padding:14px 20px; flex-direction:row; align-items:center; justify-content:space-between;"><span class="label" style="font-size:16px;">Protein powders</span><span class="n">01</span></div>
+          <div style="text-align:center; color:var(--cream-3); font-family:var(--f-mono);">↓</div>
+          <div class="flow-node" style="min-height:auto; padding:14px 20px; flex-direction:row; align-items:center; justify-content:space-between;"><span class="label" style="font-size:16px;">Protein bars</span><span class="n">02</span></div>
+          <div style="text-align:center; color:var(--cream-3); font-family:var(--f-mono);">↓</div>
+          <div class="flow-node" style="min-height:auto; padding:14px 20px; flex-direction:row; align-items:center; justify-content:space-between;"><span class="label" style="font-size:16px;">Protein cookies</span><span class="n">03</span></div>
+          <div style="text-align:center; color:var(--cream-3); font-family:var(--f-mono);">↓</div>
+          <div class="flow-node" style="min-height:auto; padding:14px 20px; flex-direction:row; align-items:center; justify-content:space-between;"><span class="label" style="font-size:16px;">Protein chips</span><span class="n">04</span></div>
+          <div style="text-align:center; color:var(--cream-3); font-family:var(--f-mono);">↓</div>
+          <div class="flow-node" style="min-height:auto; padding:16px 20px; flex-direction:row; align-items:center; justify-content:space-between; border-color:rgba(201,150,43,0.5); background:linear-gradient(180deg, rgba(201,150,43,0.2), var(--espresso-800));"><span class="label" style="font-size:18px; color:var(--gold);">High-Protein Meat &amp; Veg Snacks</span><span class="n" style="color:var(--gold);">NEXT</span></div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div class="t-label" style="margin-bottom:16px;">Opportunity across</div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:32px;">
+          <span class="seg-chip">Gym</span><span class="seg-chip">Corporate</span><span class="seg-chip">Travel</span><span class="seg-chip">Trekking</span><span class="seg-chip">Sports</span><span class="seg-chip">Military</span><span class="seg-chip">Online</span><span class="seg-chip">Exports</span>
+        </div>
+        <div class="card" style="padding:26px 28px;">
+          <p class="t-lede" style="color:var(--cream);">If executed correctly, jerky could become a <span style="color:var(--gold);">₹500&ndash;1,000 crore category</span> over the next decade in India.</p>
+          <p class="t-body" style="color:var(--cream-3); margin-top:10px;">Conditional on sustained consumer education and cold-chain-free product innovation — a projection, not a guarantee.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>10<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 11 — MARKET ENTRY STRATEGY
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the entry sequencing matters as much as the product — launch where the cuisine is already understood, let word of mouth and authenticity compound, then move north. Evidence/assumption: this sequencing logic is a strategic recommendation, not tested against actual regional demand data. Discussion question: within these five states/cities, which one city should carry the pilot launch cost first? Transition: next slide lays out the specific channel-by-channel go-to-market plan for executing this sequencing.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Market entry strategy</span>
+        <h2 class="t-headline-lg">Own the South. Not India. Not yet.</h2>
+      </div>
+      <span class="slug">11 — ENTRY</span>
+    </div>
+    <div class="reveal fill" style="display:flex; align-items:center; gap:60px;">
+      <div style="flex:1;">
+        <div class="card-grid grid-cols-3">
+          <div class="seg-card" style="text-align:center; align-items:center;"><h4>Kerala</h4></div>
+          <div class="seg-card" style="text-align:center; align-items:center;"><h4>Tamil Nadu</h4></div>
+          <div class="seg-card" style="text-align:center; align-items:center;"><h4>Karnataka</h4></div>
+          <div class="seg-card" style="text-align:center; align-items:center;"><h4>Telangana</h4></div>
+          <div class="seg-card" style="text-align:center; align-items:center;"><h4>Hyderabad</h4></div>
+          <div class="seg-card" style="text-align:center; align-items:center; background:var(--terracotta-soft); border-color:rgba(184,83,46,0.35);"><h4 style="color:var(--terracotta-deep);">Then move north →</h4></div>
+        </div>
+      </div>
+      <div style="flex:0 0 460px;">
+        <div class="t-label" style="margin-bottom:16px;">Why start here</div>
+        <div class="index-list">
+          <div class="index-row"><span class="num">01</span><div class="head" style="font-weight:500;">Consumers already understand the food.</div></div>
+          <div class="index-row"><span class="num">02</span><div class="head" style="font-weight:500;">Word of mouth grows faster.</div></div>
+          <div class="index-row" style="border-bottom:none;"><span class="num">03</span><div class="head" style="font-weight:500;">Brand authenticity develops.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>11<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 12 — GO TO MARKET
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the go-to-market sequence deliberately moves from low-fixed-cost digital channels toward higher-commitment institutional and export channels, de-risking capital as credibility builds. Evidence/assumption: the 5-phase sequencing is a recommended plan, not a committed timeline with dates. Discussion question: how long should Phase 1 (Digital First) run before triggering Phase 2 modern-retail conversations? Transition: next slide explains why not every channel in this sequence should be treated the same way strategically.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Go-to-market</span>
+        <h2 class="t-headline-lg">Five phases, low commitment to high commitment</h2>
+      </div>
+      <span class="slug">12 — GTM</span>
+    </div>
+    <div class="reveal fill" style="display:flex; flex-direction:column; justify-content:center;">
+    <div class="flow-row" style="align-items:stretch;">
+      <div class="flow-node" style="align-items:flex-start; text-align:left;"><span class="n">PHASE 1</span><span class="label">Digital First</span><span class="sub">Website, Amazon, Flipkart, Zepto, Blinkit, Instamart, BigBasket</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="align-items:flex-start; text-align:left;"><span class="n">PHASE 2</span><span class="label">Modern Retail</span><span class="sub">Lulu, Reliance, Nature's Basket, More, Spencer's, DMart</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="align-items:flex-start; text-align:left;"><span class="n">PHASE 3</span><span class="label">General Trade</span><span class="sub">Premium Kirana, Regional Distributors</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="align-items:flex-start; text-align:left;"><span class="n">PHASE 4</span><span class="label">Institutional</span><span class="sub">Hotels, Hospitals, Corporate, Airlines, Railways, Military</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="align-items:flex-start; text-align:left; border-color:rgba(184,83,46,0.4); background:var(--terracotta-soft);"><span class="n" style="color:var(--terracotta-deep);">PHASE 5</span><span class="label" style="color:var(--terracotta-deep);">Exports</span><span class="sub">Middle East first, then USA, Canada, Australia, Europe</span></div>
+    </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>12<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 13 — CHANNEL STRATEGY
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: a common mistake is treating every channel as equally important — each channel actually plays one of four distinct jobs (brand, revenue, volume, or margin), and conflating them wastes resources. Evidence/assumption: this channel-to-job mapping is the report's own framework, not a benchmarked industry model. Discussion question: if forced to fund only two of these four channel groups in year one, which two compound the fastest? Transition: next slide moves from channel mechanics to the brand story that has to travel through all of them.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Channel strategy</span>
+        <h2 class="t-headline-lg">Not every channel plays the same role</h2>
+      </div>
+      <span class="slug">13 — CHANNELS</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-4" style="align-content:center;">
+      <div class="seg-card"><span class="si">BRAND BUILDING</span><div class="tags" style="margin-top:8px;"><span class="seg-chip">Quick Commerce</span><span class="seg-chip">Amazon</span><span class="seg-chip">Instagram</span><span class="seg-chip">YouTube</span></div></div>
+      <div class="seg-card"><span class="si">REVENUE</span><div class="tags" style="margin-top:8px;"><span class="seg-chip">Modern Trade</span></div></div>
+      <div class="seg-card"><span class="si">VOLUME</span><div class="tags" style="margin-top:8px;"><span class="seg-chip">General Trade</span></div></div>
+      <div class="seg-card" style="background:var(--terracotta-soft); border-color:rgba(184,83,46,0.35);"><span class="si" style="color:var(--terracotta-deep);">MARGIN</span><div class="tags" style="margin-top:8px;"><span class="seg-chip">D2C</span><span class="seg-chip">Corporate</span><span class="seg-chip">Exports</span></div></div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>13<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 14 — BRAND STRATEGY
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: the brand must not present as a technology or convenience company — it should present as a kitchen with a story, because consumers remember stories, not manufacturing process. Evidence/assumption: the brand promise line is the report's proposed copy, not tested with consumers. Discussion question: does 'Ready in 90 Seconds' undercut the premium/authenticity positioning, or reinforce it? Transition: next slide turns this brand promise into an actual phased marketing campaign.">
+  <div class="frame" style="justify-content:center;">
+    <div class="reveal" style="margin-bottom:40px;">
+      <span class="t-kicker">Brand strategy</span>
+    </div>
+    <div class="reveal split" style="align-items:center; margin-bottom:56px;">
+      <div class="card" style="padding:36px; text-align:center;">
+        <div class="t-label" style="margin-bottom:14px;">Do NOT become</div>
+        <p class="t-headline" style="font-size:30px; color:var(--cream-3);">Ready to Eat Company</p>
+      </div>
+      <div class="card" style="padding:36px; text-align:center; border-color:rgba(201,150,43,0.5); background:linear-gradient(180deg, rgba(201,150,43,0.16), var(--espresso-800));">
+        <div class="t-label" style="margin-bottom:14px; color:var(--gold);">Become</div>
+        <p class="t-headline" style="font-size:30px; color:var(--gold);">India's Premium<br>Kerala Kitchen</p>
+      </div>
+    </div>
+    <div class="reveal" style="text-align:center;">
+      <p class="pull-quote" style="font-size:46px; max-width:1400px; margin:0 auto;">"Restaurant Quality.<br>Grandmother's Taste.<br><span class="accent">Ready in 90 Seconds.</span>"</p>
+      <p class="t-body" style="color:var(--cream-3); margin-top:24px;">Consumers remember stories. Not technology.</p>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>14<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 15 — MARKETING CAMPAIGN
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the campaign is sequenced to build from skepticism (can packaged food taste homemade?) to proof (taste challenge) to emotional connection (storytelling) to reach (influencers) to retention (community) — each phase earns the next. Evidence/assumption: this is a proposed campaign structure, not a tested media plan with budgets or timelines. Discussion question: which phase is riskiest to get wrong — the taste challenge, given it's a public claim that can fail on camera? Transition: next slide shifts from front-of-house marketing to the back-of-house operating model that has to support all of this.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Marketing campaign</span>
+        <h2 class="t-headline-lg">From curiosity to community</h2>
+      </div>
+      <span class="slug">15 — MARKETING</span>
+    </div>
+    <div class="reveal fill" style="display:flex; flex-direction:column; justify-content:center;">
+    <div class="flow-row" style="align-items:stretch;">
+      <div class="flow-node" style="align-items:flex-start; text-align:left;"><span class="n">01 — CURIOSITY</span><span class="label" style="font-size:16px;">"Can packaged food actually taste homemade?"</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="align-items:flex-start; text-align:left;"><span class="n">02 — TASTE CHALLENGE</span><span class="label" style="font-size:16px;">Blind tasting: restaurant vs. brand, filmed reactions</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="align-items:flex-start; text-align:left;"><span class="n">03 — STORYTELLING</span><span class="label" style="font-size:16px;">Every recipe has a grandmother, a village, a story</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="align-items:flex-start; text-align:left;"><span class="n">04 — INFLUENCERS</span><span class="sub">Food, Fitness, Travel, Doctors, Mothers, Chefs, Malayalam Cinema</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="align-items:flex-start; text-align:left; border-color:rgba(184,83,46,0.4); background:var(--terracotta-soft);"><span class="n" style="color:var(--terracotta-deep);">05 — COMMUNITY</span><span class="sub" style="color:var(--terracotta-deep);">Recipe club, cooking stories, customer videos, regional festivals</span></div>
+    </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>15<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 16 — OPERATIONAL MODEL
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the company should own brand, recipes, and the customer relationship — and rent everything else (manufacturing, logistics) until scale justifies vertical integration. Evidence/assumption: 'never build a factory first' is a strategic recommendation to reduce early capital risk, not a claim that contract manufacturing guarantees quality. Discussion question: at what volume or revenue threshold would owning manufacturing actually start to make sense? Transition: next slide turns this operating model into a concrete first 12-month execution plan.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Operational model</span>
+        <h2 class="t-headline-lg">Own the brand. Rent the rest — for now.</h2>
+      </div>
+      <span class="slug">16 — OPERATIONS</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-3" style="align-content:center;">
+      <div class="seg-card"><span class="si">MANUFACTURING</span><h4 style="font-size:22px;">Contract manufacturing</h4><p class="t-body" style="color:var(--ink-3);">Initially. Never build a factory first.</p></div>
+      <div class="seg-card"><span class="si">QUALITY</span><h4 style="font-size:22px;">Build your own</h4><div class="tags" style="margin-top:6px;"><span class="seg-chip">R&amp;D Kitchen</span><span class="seg-chip">Recipe Lab</span><span class="seg-chip">Food Testing</span><span class="seg-chip">QA Team</span></div></div>
+      <div class="seg-card"><span class="si">DISTRIBUTION</span><h4 style="font-size:22px;">Third-party logistics</h4><p class="t-body" style="color:var(--ink-3);">Own only brand, recipes, and the customer relationship.</p></div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>16<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 17 — 12-MONTH ROADMAP (1/2)
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the first four months are entirely about de-risking — validating demand and finalizing product before spending on launch marketing. Evidence/assumption: the KPIs and deliverables listed are the report's planning targets, not results already achieved. Discussion question: what would have to be true in the Months 1-2 taste panels for us to proceed to Months 3-4 with confidence? Transition: next slide covers the controlled launch and scale phases that follow this foundation.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">First 12-month execution roadmap</span>
+        <h2 class="t-headline-lg">Months 1&ndash;4: Foundation, then product &amp; compliance</h2>
+      </div>
+      <span class="slug">17 — ROADMAP 1/2</span>
+    </div>
+    <div class="reveal fill split" style="align-items:stretch;">
+      <div class="card" style="padding:32px;">
+        <div class="tag" style="margin-bottom:16px;">Months 1&ndash;2 — Foundation</div>
+        <div class="t-label" style="margin-bottom:10px;">Objectives</div>
+        <div class="index-list" style="margin-bottom:18px;">
+          <div class="index-row" style="padding:10px 0;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Validate market demand in Kerala, Bengaluru, Chennai, Hyderabad</div></div>
+          <div class="index-row" style="padding:10px 0;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Conduct consumer taste panels</div></div>
+          <div class="index-row" style="padding:10px 0;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Select contract manufacturer</div></div>
+          <div class="index-row" style="padding:10px 0; border-bottom:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Finalize recipes, packaging, brand identity, pricing</div></div>
+        </div>
+        <div class="t-label" style="margin-bottom:10px;">Deliverables</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;"><span class="seg-chip">Business plan</span><span class="seg-chip">Product roadmap</span><span class="seg-chip">Manufacturing agreement</span><span class="seg-chip">Financial model</span></div>
+      </div>
+      <div class="card" style="padding:32px;">
+        <div class="tag" style="margin-bottom:16px;">Months 3&ndash;4 — Product &amp; Compliance</div>
+        <div class="t-label" style="margin-bottom:10px;">Objectives</div>
+        <div class="index-list" style="margin-bottom:18px;">
+          <div class="index-row" style="padding:10px 0;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Pilot production</div></div>
+          <div class="index-row" style="padding:10px 0;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Shelf-life validation</div></div>
+          <div class="index-row" style="padding:10px 0;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">FSSAI and packaging compliance</div></div>
+          <div class="index-row" style="padding:10px 0; border-bottom:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Build website and e-commerce infrastructure</div></div>
+        </div>
+        <div class="t-label" style="margin-bottom:10px;">KPIs</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;"><span class="seg-chip">10&ndash;12 launch-ready SKUs</span><span class="seg-chip">Stable production process</span><span class="seg-chip">Positive sensory feedback</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>17<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 18 — 12-MONTH ROADMAP (2/2)
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: launch, scale, and institutional readiness are sequenced across the back eight months, with explicit success metrics at each stage rather than an open-ended rollout. Evidence/assumption: these are planning KPIs (trial customers, repeat purchase, outlet counts), not achieved results. Discussion question: which single KPI on this slide is the best early warning signal if the plan is off track? Transition: next slide zooms out from the 12-month plan to the long-term structural recommendation for the business.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">First 12-month execution roadmap</span>
+        <h2 class="t-headline-lg">Months 5&ndash;12: Launch, scale, institutional readiness</h2>
+      </div>
+      <span class="slug">18 — ROADMAP 2/2</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-3" style="align-content:center;">
+      <div class="seg-card">
+        <span class="si">MONTHS 5&ndash;6</span><h4 style="font-size:20px;">Controlled Launch</h4>
+        <p class="t-body" style="color:var(--ink-3); font-size:13px;">Kochi, Bengaluru, Chennai · D2C, Amazon, Quick Commerce, premium retail</p>
+        <div class="tags"><span class="seg-chip">5&ndash;10k trial customers</span><span class="seg-chip">&gt;25% repeat</span><span class="seg-chip">&gt;4.3/5 rating</span></div>
+      </div>
+      <div class="seg-card">
+        <span class="si">MONTHS 7&ndash;9</span><h4 style="font-size:20px;">Scale Across South India</h4>
+        <p class="t-body" style="color:var(--ink-3); font-size:13px;">Hyderabad, Coimbatore, Trivandrum, Mangalore · modern trade, distributors, corporate, HoReCa</p>
+        <div class="tags"><span class="seg-chip">25&ndash;40k cumulative customers</span><span class="seg-chip">300&ndash;500 outlets</span></div>
+      </div>
+      <div class="seg-card" style="background:var(--terracotta-soft); border-color:rgba(184,83,46,0.35);">
+        <span class="si" style="color:var(--terracotta-deep);">MONTHS 10&ndash;12</span><h4 style="font-size:20px; color:var(--terracotta-deep);">Institutional &amp; Export Readiness</h4>
+        <p class="t-body" style="color:var(--terracotta-deep); font-size:13px;">GCC export registration · airline &amp; railway pilots · corporate gifting &amp; meal kits</p>
+        <div class="tags"><span class="seg-chip">6&ndash;8 cities</span><span class="seg-chip">Export pilot shipments</span><span class="seg-chip">2&ndash;3 institutional verticals</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>18<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 19 — STRATEGIC RECOMMENDATION
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: the business should not be built as a single conventional FMCG line but as a multi-brand platform with four connected divisions, each with a different margin and go-to-market profile. Evidence/assumption: this four-division structure is the report's proposed architecture, not an existing organizational reality. Discussion question: should all four divisions be built in parallel, or does Division 1 need to prove out fully before funding Division 4? Transition: next slide gives the long-term scale ambition this platform structure is meant to support.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Strategic recommendation</span>
+        <h2 class="t-headline-lg">A multi-brand premium food platform, not a conventional FMCG line</h2>
+      </div>
+      <span class="slug">19 — STRUCTURE</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-4" style="align-content:center;">
+      <div class="seg-card"><span class="si">DIVISION 1</span><h4 style="font-size:21px;">Regional Ready-to-Eat Meals</h4><div class="tags"><span class="seg-chip">Kerala</span><span class="seg-chip">Tamil Nadu</span><span class="seg-chip">Andhra</span><span class="seg-chip">Chettinad</span><span class="seg-chip">Mangalorean</span></div></div>
+      <div class="seg-card"><span class="si">DIVISION 2</span><h4 style="font-size:21px;">High-Protein Foods</h4><div class="tags"><span class="seg-chip">Chicken Jerky</span><span class="seg-chip">Fish Jerky</span><span class="seg-chip">Prawn Jerky</span><span class="seg-chip">Mushroom &amp; Jackfruit Jerky</span><span class="seg-chip">Protein meal bowls</span></div></div>
+      <div class="seg-card"><span class="si">DIVISION 3</span><h4 style="font-size:21px;">Ready-to-Cook Solutions</h4><div class="tags"><span class="seg-chip">Curry bases</span><span class="seg-chip">Biryani kits</span><span class="seg-chip">Regional gravies</span><span class="seg-chip">Breakfast kits</span></div></div>
+      <div class="seg-card"><span class="si">DIVISION 4</span><h4 style="font-size:21px;">Global Ethnic Foods</h4><div class="tags"><span class="seg-chip">Export-focused products</span><span class="seg-chip">NRI meal solutions</span><span class="seg-chip">Travel packs</span></div></div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>19<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 20 — LONG-TERM VIEW
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: the 5-10 year outcome — a ₹500-1,000 crore branded food company — is achievable but conditional on sustained investment in quality, brand, distribution, and manufacturing, and on refusing to compete on price. Evidence/assumption: the ₹500-1,000cr figure is the report's own long-term ambition framed as conditional ('would require'), not a projection with a stated methodology — present it as a vision, not a forecast. Discussion question: what would be the clearest signal, 24 months in, that we're actually on this trajectory versus building a smaller regional brand? Transition: next slide synthesizes the entire report into one summary view.">
+  <div class="frame" style="justify-content:center;">
+    <span class="reveal t-kicker" style="margin-bottom:24px;">Long-term view — 5 to 10 years</span>
+    <p class="reveal pull-quote" style="font-size:52px; max-width:1500px; margin-bottom:36px;">With disciplined execution, this can become a <span class="accent">₹500&ndash;1,000 crore</span> branded food company.</p>
+    <p class="reveal t-body" style="color:var(--cream-3); max-width:1200px; margin-bottom:44px; font-size:19px;">Achieving that scale requires sustained investment in product quality, brand building, distribution, and manufacturing excellence — the ambition is conditional on execution, not guaranteed by market size alone.</p>
+    <div class="reveal card" style="max-width:1300px; padding:32px 36px;">
+      <p class="t-lede" style="color:var(--gold); margin:0;">For maximum probability of success: compete on <span style="color:var(--cream);">authenticity, superior taste, premium quality, convenience, and regional culinary expertise</span> — never on price.</p>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>20<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 21 — SUMMARY
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the whole report compresses into one sentence — build a regional cuisine platform starting with Kerala, sequenced South-first, structured as four divisions, judged against the mother's-kitchen benchmark rather than other RTE brands. Evidence/assumption: this is a synthesis slide, not new information — cross-check it against the earlier detail slides before using it standalone. Discussion question: if someone only reads this one slide, what's the one thing they'd need to also read in full before making a capital decision? Transition: closing slide.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Summary</span>
+        <h2 class="t-headline-lg">The whole thesis, one slide</h2>
+      </div>
+      <span class="slug">21 — SUMMARY</span>
+    </div>
+    <div class="reveal fill index-list" style="align-content:center;">
+      <div class="index-row"><span class="num">01</span><div><div class="head">Not Ready-to-Eat — a Premium Regional Food Company</div><div class="sub">Built around Time, Trust, Authenticity, Health, Premium Experience, Consistency.</div></div></div>
+      <div class="index-row"><span class="num">02</span><div><div class="head">The white space is premium South Indian cuisine</div><div class="sub">North Indian staples are owned; Kerala &amp; South Indian regional cuisine is not.</div></div></div>
+      <div class="index-row"><span class="num">03</span><div><div class="head">12 Hero Products, not 60 SKUs — plus a jerky bet</div><div class="sub">Discipline in the line-up; a near-uncontested next category in high-protein snacks.</div></div></div>
+      <div class="index-row"><span class="num">04</span><div><div class="head">Own the South first, then go north, then export</div><div class="sub">Kerala → Tamil Nadu → Karnataka → Telangana → Hyderabad → India → GCC → the world.</div></div></div>
+      <div class="index-row"><span class="num">05</span><div><div class="head">Structure as a 4-division platform, not one FMCG brand</div><div class="sub">Regional RTE, High-Protein Foods, Ready-to-Cook, Global Ethnic Foods.</div></div></div>
+      <div class="index-row" style="border-bottom:none;"><span class="num">06</span><div><div class="head">Win on authenticity, not price</div><div class="sub">The benchmark is "can this replace my mother's food?" — not another RTE brand.</div></div></div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>21<span class="dot">·</span>22</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 22 — CLOSING
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: this closing slide restates the report's central identity claim — the company should be remembered as the House of Regional Indian Cuisine, not a Ready-to-Eat vendor — and opens the floor for discussion. Evidence/assumption: this is a closing framing device, not new information. Discussion question: what would you need to see in the next 90 days to move from 'interesting report' to 'funded pilot'? Transition: end of deck — open discussion.">
+  <div class="frame" style="justify-content:center; align-items:flex-end; text-align:right;">
+    <span class="reveal t-kicker" style="margin-bottom:26px;">Closing</span>
+    <h2 class="reveal t-display" style="max-width:1400px; margin-bottom:28px;">Not a Ready-to-Eat company.<br>The House of Regional Indian Cuisine.</h2>
+    <p class="reveal t-lede" style="color:var(--cream-3); max-width:1100px; margin-bottom:48px;">Beginning with Kerala. Judged against a grandmother's kitchen, not another RTE brand.</p>
+    <div class="reveal" style="border-top:1px solid var(--espresso-line-strong); padding-top:22px; max-width:900px;">
+      <p class="t-body" style="color:var(--cream-2);">Discussion: market validation, capital requirements, and the right first city to launch in.</p>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>22<span class="dot">·</span>22</div></div>
+</section>
+
+</main>
+</div>
+
+<!-- Notes panel -->
+<div class="notes-panel" id="notesPanel">
+  <div class="nk">Speaker notes — press N to hide</div>
+  <div id="notesBody"></div>
+</div>
+
+<!-- Deck controls -->
+<div class="deck-controls">
+  <span id="slideCounter">01 / 22</span>
+  <span class="sep">|</span>
+  <button id="prevBtn">← PREV</button>
+  <button id="nextBtn">NEXT →</button>
+  <span class="sep">|</span>
+  <button id="notesBtn">NOTES (N)</button>
+</div>
+
+<!-- Inline editing affordance -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">✎</button>
+
+<script>
+class SlidePresentation {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.currentSlide = 0;
+    this.stage = document.getElementById('deckStage');
+    this.notesPanel = document.getElementById('notesPanel');
+    this.notesBody = document.getElementById('notesBody');
+    this.notesOn = false;
+    this.setupStageScale();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.setupControls();
+    this.showSlide(0);
+  }
+  setupStageScale() {
+    const scale = () => {
+      const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const x = (window.innerWidth - 1920 * factor) / 2;
+      const y = (window.innerHeight - 1080 * factor) / 2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+    };
+    scale();
+    window.addEventListener('resize', scale);
+  }
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      if (e.target.getAttribute && e.target.getAttribute('contenteditable')) return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); this.next(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); this.prev(); }
+      else if (e.key === 'n' || e.key === 'N') { this.toggleNotes(); }
+      else if (e.key === 'e' || e.key === 'E') { window.editor && window.editor.toggleEditMode(); }
+    });
+  }
+  setupTouchNav() {
+    let startX = 0;
+    document.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, {passive:true});
+    document.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 50) { dx < 0 ? this.next() : this.prev(); }
+    }, {passive:true});
+  }
+  setupWheelNav() {
+    let locked = false;
+    window.addEventListener('wheel', (e) => {
+      if (locked) return;
+      if (Math.abs(e.deltaY) < 20) return;
+      locked = true;
+      e.deltaY > 0 ? this.next() : this.prev();
+      setTimeout(() => locked = false, 500);
+    }, {passive:true});
+  }
+  setupControls() {
+    document.getElementById('prevBtn').addEventListener('click', () => this.prev());
+    document.getElementById('nextBtn').addEventListener('click', () => this.next());
+    document.getElementById('notesBtn').addEventListener('click', () => this.toggleNotes());
+  }
+  next() { this.showSlide(this.currentSlide + 1); }
+  prev() { this.showSlide(this.currentSlide - 1); }
+  showSlide(index) {
+    this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+    this.slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === this.currentSlide);
+      slide.classList.toggle('visible', i === this.currentSlide);
+    });
+    const n = this.currentSlide + 1;
+    document.getElementById('slideCounter').textContent = String(n).padStart(2,'0') + ' / ' + this.slides.length;
+    if (this.notesOn) this.renderNotes();
+  }
+  toggleNotes() {
+    this.notesOn = !this.notesOn;
+    this.notesPanel.classList.toggle('show', this.notesOn);
+    if (this.notesOn) this.renderNotes();
+  }
+  renderNotes() {
+    const notes = this.slides[this.currentSlide].getAttribute('data-notes') || '';
+    this.notesBody.innerHTML = notes.replace(/(Main argument:|Evidence\/assumption:|Discussion question:|Transition:)/g, '<br><strong>$1</strong>');
+  }
+}
+
+class InlineEditor {
+  constructor() {
+    this.isActive = false;
+    this.storageKey = 'india-rte-deck-edits';
+    this.editableSelector = 'h1,h2,p,span.head,div.head,div.sub,h4,span.label,div.note';
+    this.loadEdits();
+    this.bindHotzone();
+  }
+  bindHotzone() {
+    const hotzone = document.getElementById('editHotzone');
+    const toggle = document.getElementById('editToggle');
+    let hideTimeout = null;
+    const show = () => { clearTimeout(hideTimeout); toggle.classList.add('show'); };
+    const scheduleHide = () => { hideTimeout = setTimeout(() => { if (!this.isActive) toggle.classList.remove('show'); }, 400); };
+    hotzone.addEventListener('mouseenter', show);
+    hotzone.addEventListener('mouseleave', scheduleHide);
+    toggle.addEventListener('mouseenter', show);
+    toggle.addEventListener('mouseleave', scheduleHide);
+    hotzone.addEventListener('click', () => this.toggleEditMode());
+    toggle.addEventListener('click', () => this.toggleEditMode());
+  }
+  toggleEditMode() {
+    this.isActive = !this.isActive;
+    document.getElementById('editToggle').classList.toggle('active', this.isActive);
+    document.querySelectorAll('.slide ' + this.editableSelector).forEach(el => {
+      el.setAttribute('contenteditable', this.isActive ? 'true' : 'false');
+      if (this.isActive) { el.addEventListener('blur', () => this.saveEdits()); }
+    });
+  }
+  saveEdits() {
+    const data = {};
+    document.querySelectorAll('.slide').forEach((slide, si) => {
+      slide.querySelectorAll(this.editableSelector).forEach((el, ei) => { data[si + '-' + ei] = el.innerHTML; });
+    });
+    localStorage.setItem(this.storageKey, JSON.stringify(data));
+  }
+  loadEdits() {
+    try {
+      const data = JSON.parse(localStorage.getItem(this.storageKey) || '{}');
+      document.querySelectorAll('.slide').forEach((slide, si) => {
+        slide.querySelectorAll(this.editableSelector).forEach((el, ei) => {
+          const key = si + '-' + ei;
+          if (data[key] !== undefined) el.innerHTML = data[key];
+        });
+      });
+    } catch(e) {}
+  }
+}
+
+window.deck = new SlidePresentation();
+window.editor = new InlineEditor();
+</script>
+</body>
+</html>

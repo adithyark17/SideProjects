@@ -211,7 +211,18 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
 .light .sr-bar-track{ background:var(--paper-2); }
 .dark .sr-bar-track{ background:var(--espresso-700); }
 .sr-bar-fill{ height:100%; border-radius:6px; background:linear-gradient(90deg, var(--terracotta), var(--gold)); }
+.sr-bar-fill.muted{ background:var(--ink-4); }
 .stat-row .sr-value{ font-family:var(--f-display); font-weight:500; font-size:24px; text-align:right; }
+
+/* Protein rows (formulation table) — extends stat-row with a claim column */
+.protein-row{ display:grid; grid-template-columns:260px 1fr 130px 400px; align-items:center; gap:20px; padding:16px 0; }
+.light .protein-row{ border-bottom:1px solid var(--paper-line); }
+.protein-row:last-child{ border-bottom:none; }
+.protein-row .pr-label{ font-family:var(--f-body); font-weight:600; font-size:16px; }
+.protein-row .pr-value{ font-family:var(--f-display); font-weight:500; font-size:19px; text-align:right; }
+.protein-row .pr-claim{ font-family:var(--f-body); font-size:12.5px; color:var(--ink-3); }
+.protein-row .pr-claim .yes{ color:var(--terracotta-deep); font-weight:600; }
+.protein-row .pr-claim .no{ color:var(--ink-4); font-weight:600; }
 
 /* Workflow / phase flow */
 .flow-row{ display:flex; align-items:stretch; gap:0; }
@@ -240,6 +251,14 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
 .pull-quote .muted{ opacity:0.55; }
 .pull-quote .accent{ font-style:normal; font-weight:500; color:var(--gold); }
 .light .pull-quote .accent{ color:var(--terracotta); }
+
+/* Cross-reference note (added for reconciled slides) */
+.xref{ font-family:var(--f-body); font-size:12.5px; font-style:italic; display:flex; align-items:center; gap:8px; }
+.light .xref{ color:var(--ink-3); }
+.dark .xref{ color:var(--cream-3); }
+.xref::before{ content:"→"; font-style:normal; font-family:var(--f-mono); }
+.light .xref::before{ color:var(--terracotta); }
+.dark .xref::before{ color:var(--gold); }
 
 /* Reveal animation */
 .reveal{ opacity:0; transform:translateY(22px); transition:opacity var(--duration-normal) var(--ease-out-expo), transform var(--duration-normal) var(--ease-out-expo); }
@@ -292,7 +311,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
   </div>
   <div class="footer-row">
     <div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div>
-    <div>01<span class="dot">·</span>22</div>
+    <div>01<span class="dot">·</span>30</div>
   </div>
 </section>
 
@@ -327,13 +346,13 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       </div>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>02<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>02<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
      SLIDE 03 — MARKET SIZE & OPPORTUNITY
      ========================================================= -->
-<section class="slide light" data-notes="Main argument: the addressable market is layered — a $600B+ food processing industry containing a fast-growing but still small $1-1.3B RTE segment, with quick commerce (>40% annual growth) as the accelerant. Evidence/assumption: figures are the report's own 2025-26 estimates; source methodology isn't specified in the document, so treat as directional industry sizing, not audited data. Discussion question: which of these five categories is the right one to actually be measured against in year one? Transition: next slide explains why this market is growing right now, not just why it's large.">
+<section class="slide light" data-notes="Main argument: the addressable market is layered — a $600B+ food processing industry containing a fast-growing but still small $1-1.3B RTE segment, with quick commerce (>40% annual growth) as the accelerant. Evidence/assumption: figures are the report's own 2025-26 estimates; source methodology isn't specified in the document, so treat as directional industry sizing, not audited data. Discussion question: which of these five categories is the right one to actually be measured against in year one? Transition: next slide breaks this industry-level sizing down into what's actually addressable and obtainable.">
   <div class="frame">
     <div class="topbar reveal">
       <div>
@@ -351,16 +370,49 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <div class="stat-row"><span class="sr-label">Ready to Cook</span><div class="sr-bar-track"><div class="sr-bar-fill" style="width:6%;"></div></div><span class="sr-value">US$700+ Million</span></div>
       </div>
     </div>
-    <div class="reveal card" style="flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:28px;">
-      <p class="t-lede" style="margin:0;">Quick Commerce Food Sales are <span style="color:var(--terracotta);">growing &gt;40% annually</span> in major cities — the distribution accelerant underneath all five categories.</p>
-      <span class="tag">2025&ndash;26 estimates</span>
+    <div class="reveal card" style="flex:0 0 auto;">
+      <p class="t-lede" style="margin:0 0 8px;">Quick Commerce Food Sales are <span style="color:var(--terracotta);">growing &gt;40% annually</span> in major cities — the distribution accelerant underneath all five categories.</p>
+      <p class="t-body" style="margin:0; color:var(--ink-3);">The RTE segment itself is tracking a <strong style="color:var(--terracotta-deep);">15.3% CAGR</strong>, from ~US$1.04B (2025) to ~US$2.44B (2031) — consistent with the estimate above.</p>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>03<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>03<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 04 — WHY IS THIS GROWING
+     SLIDE 04 — TAM / SAM / SOM  [NEW]
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the industry-level sizing on the previous slide is macro context — the funnel that actually matters is TAM/SAM/SOM, which narrows a ~₹18,500 Cr addressable universe down to a ~₹50-75 Cr obtainable slice by Year 3. Evidence/assumption: these are the business plan's own market-sizing estimates (not independently audited); the SOM figure matches the Year-3 revenue target seen later in the financial projections, so treat the two as the same number viewed from different angles, not independent confirmations. Discussion question: is 2-3% direct market capture of the SAM a realistic Year-3 target given the channels listed, or optimistic? Transition: next slide returns to the qualitative story — why this market is growing in the first place.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Market sizing — TAM / SAM / SOM</span>
+        <h2 class="t-headline-lg">From macro opportunity to what we can actually capture</h2>
+      </div>
+      <span class="slug">04 — TAM / SAM / SOM</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-3" style="align-content:center;">
+      <div class="seg-card">
+        <span class="si">TAM</span>
+        <h4>~₹18,500 Cr <span style="font-size:15px; color:var(--ink-3); font-family:var(--f-body); font-weight:500;">(~$2.2B)</span></h4>
+        <p class="t-body" style="color:var(--ink-3); font-size:13px;">Macro RTE Meals + Packaged Ethnic Snacks + Global Malayali/NRK Spend</p>
+      </div>
+      <div class="seg-card">
+        <span class="si">SAM</span>
+        <h4>~₹2,400 Cr <span style="font-size:15px; color:var(--ink-3); font-family:var(--f-body); font-weight:500;">(~$285M)</span></h4>
+        <p class="t-body" style="color:var(--ink-3); font-size:13px;">South India Metros (BLR, MAA, HYD) + Urban/Regional Kerala (Central &amp; North) + GCC, USA, Europe &amp; Global NRKs</p>
+      </div>
+      <div class="seg-card" style="background:var(--terracotta-soft); border-color:rgba(184,83,46,0.35);">
+        <span class="si" style="color:var(--terracotta-deep);">SOM (Year 3)</span>
+        <h4 style="color:var(--terracotta-deep);">~₹50&ndash;75 Cr</h4>
+        <p class="t-body" style="color:var(--terracotta-deep); font-size:13px;">2&ndash;3% direct market capture via Q-Commerce, D2C, Modern Trade, GCC, US &amp; European ethnic export channels</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>04<span class="dot">·</span>30</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 05 — WHY IS THIS GROWING
      ========================================================= -->
 <section class="slide light" data-notes="Main argument: the RTE opportunity is downstream of a real demographic shift in Indian households — dual incomes, distance from home, and time scarcity — not a manufactured trend. Evidence/assumption: this is a qualitative societal narrative from the report, not backed by cited demographic statistics in the document. Discussion question: which of these five shifts is most true in the specific city/segment we'd launch in first? Transition: next slide shows how consumer expectations have evolved in step with this shift.">
   <div class="frame">
@@ -369,7 +421,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">Why is this industry growing</span>
         <h2 class="t-headline-lg">Because India itself is changing</h2>
       </div>
-      <span class="slug">04 — CONTEXT</span>
+      <span class="slug">05 — CONTEXT</span>
     </div>
     <div class="reveal fill split">
       <div>
@@ -394,11 +446,11 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <p class="pull-quote" style="font-size:32px; color:var(--ink);">"I want home food<span class="accent"> without cooking</span>."<br><span style="font-size:20px; opacity:0.65;">— that is exactly where Ready-to-Eat fits.</span></p>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>04<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>05<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 05 — CONSUMER EVOLUTION
+     SLIDE 06 — CONSUMER EVOLUTION
      ========================================================= -->
 <section class="slide dark" data-notes="Main argument: Indian consumers have moved through four generations of purchase logic, and the fourth — premium authenticity — is where the pricing power and margin actually live. Evidence/assumption: this generational framework is the report's own model, not a cited academic or survey source. Discussion question: is our target beachhead audience actually in generation 4 today, or are we betting on them moving there? Transition: next slide shows exactly where that premium-authenticity demand is currently unmet — the white space.">
   <div class="frame">
@@ -407,7 +459,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">Consumer evolution</span>
         <h2 class="t-headline-lg">The fourth generation is where the money is</h2>
       </div>
-      <span class="slug">05 — CONSUMER</span>
+      <span class="slug">06 — CONSUMER</span>
     </div>
     <div class="reveal fill" style="display:flex; flex-direction:column; justify-content:center;">
     <div class="flow-row" style="align-items:stretch;">
@@ -424,11 +476,11 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <p class="pull-quote" style="font-size:36px;">Consumers no longer compare you to another RTE brand.<br>They ask <span class="accent">"Can this replace my mother's food?"</span></p>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>05<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>06<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 06 — THE BIG WHITE SPACE
+     SLIDE 07 — THE BIG WHITE SPACE
      ========================================================= -->
 <section class="slide light" data-notes="Main argument: nearly every scaled Indian RTE brand owns North Indian staples; almost none own premium South Indian regional cuisine, and that gap is large enough to be a platform, not a product line. Evidence/assumption: 'very few companies own premium South Indian regional cuisine' is a competitive-landscape claim from the report, not a documented market-share analysis. Discussion question: which single dish on this white-space list would make the strongest hero SKU to prove the thesis first? Transition: next slide reframes what building in this white space actually means strategically.">
   <div class="frame">
@@ -437,7 +489,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">The big white space</span>
         <h2 class="t-headline-lg">North Indian is owned. South Indian regional cuisine is not.</h2>
       </div>
-      <span class="slug">06 — WHITE SPACE</span>
+      <span class="slug">07 — WHITE SPACE</span>
     </div>
     <div class="reveal fill split">
       <div>
@@ -467,11 +519,11 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <p class="t-lede">This is not just a product portfolio. It is <span style="color:var(--terracotta);">a cuisine platform.</span></p>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>06<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>07<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 07 — THE REAL OPPORTUNITY
+     SLIDE 08 — THE REAL OPPORTUNITY
      ========================================================= -->
 <section class="slide dark" data-notes="Main argument: reframing the business from 'selling Ready-to-Eat' to 'exporting Kerala to the world' changes the competitive set, pricing power, and brand latitude. Evidence/assumption: the four downstream consequences (fewer competitors, better pricing, stronger branding, expanded export opportunity) are the report's stated logic, not measured outcomes. Discussion question: if we adopt this frame internally, what's the first decision it should actually change — pricing, packaging, or which market we launch in? Transition: next slide breaks down exactly who this reframed business serves.">
   <div class="frame">
@@ -480,7 +532,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">The real opportunity</span>
         <h2 class="t-headline-lg">Don't think Ready-to-Eat. Think exporting Kerala to the world.</h2>
       </div>
-      <span class="slug">07 — REFRAME</span>
+      <span class="slug">08 — REFRAME</span>
     </div>
     <div class="reveal fill split" style="align-items:stretch;">
       <div class="card" style="padding:40px;">
@@ -499,20 +551,20 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <span class="tag">Expanded export opportunity</span>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>07<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>08<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 08 — MARKET SEGMENTATION
+     SLIDE 09 — MARKET SEGMENTATION
      ========================================================= -->
-<section class="slide light" data-notes="Main argument: seven distinct segments exist with different needs and margin profiles — urban professionals are the volume base, NRIs are likely the highest-margin segment, and fitness is a segment that barely exists as a category yet in India. Evidence/assumption: segment sizing and margin ranking ('largest opportunity', 'possibly highest margin') are the report's qualitative judgment, not quantified research. Discussion question: which two segments should the first 12 months actually be built for, given the beachhead is South India? Transition: next slide shows the product strategy built to serve these segments without overextending into 60 SKUs.">
+<section class="slide light" data-notes="Main argument: seven distinct segments exist with different needs and margin profiles — urban professionals are the volume base, NRIs are likely the highest-margin segment, and fitness is a segment that barely exists as a category yet in India. Evidence/assumption: segment sizing and margin ranking ('largest opportunity', 'possibly highest margin') are the report's qualitative judgment, not quantified research. Discussion question: which two segments should the first 12 months actually be built for, given the beachhead is South India? Transition: next slide shows the strategic portfolio lens used to prioritize products across these segments.">
   <div class="frame">
     <div class="topbar reveal">
       <div>
         <span class="t-kicker kicker">Market segmentation</span>
         <h2 class="t-headline-lg">Seven segments, one canonical product line</h2>
       </div>
-      <span class="slug">08 — SEGMENTS</span>
+      <span class="slug">09 — SEGMENTS</span>
     </div>
     <div class="reveal fill card-grid grid-cols-4" style="padding-top:6px;">
       <div class="seg-card"><span class="si">01</span><h4>Urban Professionals</h4><p class="note">Largest opportunity</p><div class="tags"><span class="seg-chip">Breakfast</span><span class="seg-chip">Lunch</span><span class="seg-chip">Dinner</span><span class="seg-chip">Late-night</span></div></div>
@@ -524,20 +576,63 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <div class="seg-card"><span class="si">07</span><h4>NRIs</h4><p class="note">Possibly the highest-margin segment</p><div class="tags"><span class="seg-chip">Middle East</span><span class="seg-chip">UK</span><span class="seg-chip">USA</span><span class="seg-chip">Canada</span><span class="seg-chip">Australia</span><span class="seg-chip">Singapore</span></div></div>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>08<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>09<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 09 — PRODUCT STRATEGY
+     SLIDE 10 — STRATEGIC PORTFOLIO MATRIX  [NEW]
      ========================================================= -->
-<section class="slide light" data-notes="Main argument: discipline beats breadth at launch — 12 hero products across four lines is enough to prove the thesis without the operational drag of 60 SKUs. Evidence/assumption: '12 Hero Products' is a strategic recommendation, not a validated optimal count. Discussion question: if we had to cut this list to 6 SKUs for a pilot, which 6 would carry the brand promise best? Transition: next slide zooms into one specific line — jerky — and argues it deserves outsized attention.">
+<section class="slide light" data-notes="Main argument: rather than a flat product list, the business plan organizes SKUs into a 2x2 matrix balancing trial friction against emotional/taste attachment — velocity items build repeat habit fast, authenticity items carry high ticket size and emotional pull, the fitness quadrant is a niche high-margin hook, and staple extensions fill out the basket. Evidence/assumption: this quadrant framework and its specific SKU assignments are the business plan's own strategic model, not market-tested category performance data; note that some SKU names here (Protein Murukku, Idiyappam Mix, Seitan Protein Bites) differ from the '12 Hero Products' list earlier in this deck — both are legitimate framings from different planning passes, shown here side by side rather than merged. Discussion question: which quadrant should receive the first marketing rupee — velocity (fast repeat) or authenticity (emotional pull, higher ticket)? Transition: next slide details the '12 Hero Products' SKU list this portfolio thinking maps onto.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Product architecture &amp; innovation</span>
+        <h2 class="t-headline-lg">A 2×2 strategic portfolio, not a flat SKU list</h2>
+      </div>
+      <span class="slug">10 — PORTFOLIO MATRIX</span>
+    </div>
+    <p class="reveal t-body" style="flex:0 0 auto; margin-bottom:18px; color:var(--ink-3);">Vertical axis: taste attachment &amp; repeat habit &nbsp;·&nbsp; Horizontal axis: trial friction vs. repeat velocity</p>
+    <div class="reveal fill card-grid grid-cols-2" style="align-content:center;">
+      <div class="seg-card">
+        <span class="si">QUADRANT I — THE VELOCITY ENGINE</span>
+        <h4 style="font-size:21px;">Functional Traditional Snacks</h4>
+        <div class="tags"><span class="seg-chip">Protein Murukku</span><span class="seg-chip">Protein Thattai</span><span class="seg-chip">Protein Banana Chips</span></div>
+        <p class="note">Low trial barrier / high repeat velocity</p>
+      </div>
+      <div class="seg-card" style="background:var(--terracotta-soft); border-color:rgba(184,83,46,0.35);">
+        <span class="si" style="color:var(--terracotta-deep);">QUADRANT II — THE AUTHENTICITY DRIVER</span>
+        <h4 style="font-size:21px; color:var(--terracotta-deep);">Ambient Non-Veg RTE Regional Curries</h4>
+        <div class="tags"><span class="seg-chip">Malabar Chicken Curry</span><span class="seg-chip">Fish Curry</span><span class="seg-chip">Chettinad Mutton Curry</span></div>
+        <p class="note">High ticket size / high emotional pull</p>
+      </div>
+      <div class="seg-card">
+        <span class="si">QUADRANT IV — STAPLE EXTENSIONS</span>
+        <h4 style="font-size:21px;">Ambient Veg Meals &amp; Breakfast</h4>
+        <div class="tags"><span class="seg-chip">Avial</span><span class="seg-chip">Sambar</span><span class="seg-chip">Idiyappam Mix</span></div>
+        <p class="note">Saturated mass market — margin support / basket filler</p>
+      </div>
+      <div class="seg-card">
+        <span class="si">QUADRANT III — THE FITNESS HALO</span>
+        <h4 style="font-size:21px;">Pure Meat/Fish Jerkies &amp; Plant Seitan</h4>
+        <div class="tags"><span class="seg-chip">Peppered Chicken Jerky</span><span class="seg-chip">Fish Jerky</span><span class="seg-chip">Spicy Seitan Protein Bites</span></div>
+        <p class="note">Niche audience / high margin hook</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>10<span class="dot">·</span>30</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 11 — PRODUCT STRATEGY
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: discipline beats breadth at launch — 12 hero products across four lines is enough to prove the thesis without the operational drag of 60 SKUs. Evidence/assumption: '12 Hero Products' is a strategic recommendation, not a validated optimal count. Discussion question: if we had to cut this list to 6 SKUs for a pilot, which 6 would carry the brand promise best? Transition: next slide zooms into the protein science underneath the jerky and snack lines shown here.">
   <div class="frame">
     <div class="topbar reveal">
       <div>
         <span class="t-kicker kicker">Product strategy</span>
         <h2 class="t-headline-lg">12 Hero Products. Not 60 SKUs.</h2>
       </div>
-      <span class="slug">09 — PRODUCT</span>
+      <span class="slug">11 — PRODUCT</span>
     </div>
     <div class="reveal fill card-grid grid-cols-4" style="padding-top:6px;">
       <div class="seg-card"><span class="si">RICE</span><h4 style="font-size:20px;">Premium Rice</h4><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Ghee Rice</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Jeera Rice</div></div></div></div>
@@ -545,21 +640,73 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <div class="seg-card"><span class="si">VEG</span><h4 style="font-size:20px;">Vegetarian</h4><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Avial</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Vegetable Kurma</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Sambar</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Kadala Curry</div></div></div></div>
       <div class="seg-card"><span class="si">SNACKS</span><h4 style="font-size:20px;">Premium Snacks</h4><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Chicken Jerky</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Fish Jerky</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Mushroom Jerky</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:15px; font-weight:500;">Jackfruit Jerky</div></div></div></div>
     </div>
+    <p class="reveal xref" style="flex:0 0 auto; margin-top:16px;">See the Strategic Portfolio Matrix (previous slide) for how this lineup maps to velocity, authenticity, and margin.</p>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>09<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>11<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 10 — WHY JERKY
+     SLIDE 12 — PROTEIN STANDARDS & FORMULATION  [NEW]
      ========================================================= -->
-<section class="slide dark" data-notes="Main argument: India has followed the West's protein-product adoption curve through powders, bars, cookies, and chips — meat/veg jerky is the plausible next wave, and it's nearly uncontested in India today. Evidence/assumption: the ₹500-1,000 crore category-size figure is the report's own projection framed explicitly as conditional ('if executed correctly'), requiring sustained consumer education — label it as a projection, not a forecast. Discussion question: which single use case (gym, travel, military, export) would you target first to prove jerky demand cheaply? Transition: next slide moves from product to geography — where this whole strategy should launch first.">
+<section class="slide light" data-notes="Main argument: not every 'high-protein-sounding' ingredient is actually high-protein — the brand's fortification claims need to be built on verified dietary science, with jackfruit and mushroom explicitly positioned as texture/fiber players, not protein sources. Evidence/assumption: gram-per-100g figures are the business plan's own formulation reference values, not independently lab-verified in this deck — actual products would need NABL nutritional panel testing (see Regulatory & Compliance later) before any claim ships on packaging. Discussion question: does leading with plant proteins (seitan, soy) alongside animal proteins (chicken, fish) strengthen or dilute the 'authentic regional curry' positioning? Transition: next slide returns to why jerky specifically is the category to watch.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Protein standards &amp; formulation</span>
+        <h2 class="t-headline-lg">Verified dietary science, not marketing claims</h2>
+      </div>
+      <span class="slug">12 — PROTEIN SCIENCE</span>
+    </div>
+    <div class="reveal fill" style="display:flex; flex-direction:column; justify-content:center;">
+      <div class="protein-row" style="border-bottom:1px solid var(--paper-line); padding-bottom:14px; margin-bottom:6px;">
+        <span class="t-label">Base ingredient</span><span></span><span class="t-label" style="text-align:right;">Protein / 100g</span><span class="t-label">Positioning &amp; claim guideline</span>
+      </div>
+      <div class="protein-row">
+        <span class="pr-label">Wheat Gluten (Seitan)</span>
+        <div class="sr-bar-track"><div class="sr-bar-fill" style="width:100%;"></div></div>
+        <span class="pr-value">70&ndash;75g</span>
+        <span class="pr-claim"><span class="yes">&#9733; Primary</span> plant-protein base — Seitan Jerky &amp; Protein Bowls</span>
+      </div>
+      <div class="protein-row">
+        <span class="pr-label">Soy Chunks (Dry)</span>
+        <div class="sr-bar-track"><div class="sr-bar-fill" style="width:69%;"></div></div>
+        <span class="pr-value">52g</span>
+        <span class="pr-claim"><span class="yes">&#9733; High-protein</span> plant platform — snack fortification</span>
+      </div>
+      <div class="protein-row">
+        <span class="pr-label">Roasted Edamame</span>
+        <div class="sr-bar-track"><div class="sr-bar-fill" style="width:53%;"></div></div>
+        <span class="pr-value">35&ndash;40g</span>
+        <span class="pr-claim"><span class="yes">&#9733; High-protein</span> plant/seed base</span>
+      </div>
+      <div class="protein-row">
+        <span class="pr-label">Chicken / Fish</span>
+        <div class="sr-bar-track"><div class="sr-bar-fill" style="width:41%;"></div></div>
+        <span class="pr-value">22&ndash;31g</span>
+        <span class="pr-claim"><span class="yes">&#9733; Primary</span> animal protein — retort curries &amp; meat jerkies</span>
+      </div>
+      <div class="protein-row" style="border-bottom:none;">
+        <span class="pr-label">Jackfruit / Mushroom</span>
+        <div class="sr-bar-track"><div class="sr-bar-fill muted" style="width:5%;"></div></div>
+        <span class="pr-value">1.5&ndash;4g</span>
+        <span class="pr-claim"><span class="no">&#10007; NOT high protein</span> — positioned strictly as low-fat, fiber &amp; texture</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>12<span class="dot">·</span>30</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 13 — WHY JERKY
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: India has followed the West's protein-product adoption curve through powders, bars, cookies, and chips — meat/veg jerky is the plausible next wave, and it's nearly uncontested in India today. Evidence/assumption: the ₹500-1,000 crore category-size figure is the report's own projection framed explicitly as conditional ('if executed correctly'), requiring sustained consumer education — label it as a projection, not a forecast; the 5.5% global/national CAGR figure is a separate, more conservative industry-growth estimate from the business plan, shown alongside it as corroborating (not identical) evidence. Discussion question: which single use case (gym, travel, military, export) would you target first to prove jerky demand cheaply? Transition: next slide moves from product to geography — where this whole strategy should launch first.">
   <div class="frame">
     <div class="topbar reveal">
       <div>
         <span class="t-kicker kicker">Why jerky may become the next big category</span>
         <h2 class="t-headline-lg">India has followed the West's protein curve — jerky is next</h2>
       </div>
-      <span class="slug">10 — JERKY</span>
+      <span class="slug">13 — JERKY</span>
     </div>
     <div class="reveal fill" style="display:flex; align-items:center; gap:60px;">
       <div style="flex:0 0 640px;">
@@ -582,16 +729,16 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         </div>
         <div class="card" style="padding:26px 28px;">
           <p class="t-lede" style="color:var(--cream);">If executed correctly, jerky could become a <span style="color:var(--gold);">₹500&ndash;1,000 crore category</span> over the next decade in India.</p>
-          <p class="t-body" style="color:var(--cream-3); margin-top:10px;">Conditional on sustained consumer education and cold-chain-free product innovation — a projection, not a guarantee.</p>
+          <p class="t-body" style="color:var(--cream-3); margin-top:10px;">Conditional on sustained consumer education and cold-chain-free product innovation — a projection, not a guarantee. Meat &amp; jerky snacks are already growing at a <strong style="color:var(--gold);">5.5% CAGR</strong> globally and nationally — an existing base to build from.</p>
         </div>
       </div>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>10<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>13<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 11 — MARKET ENTRY STRATEGY
+     SLIDE 14 — MARKET ENTRY STRATEGY
      ========================================================= -->
 <section class="slide light" data-notes="Main argument: the entry sequencing matters as much as the product — launch where the cuisine is already understood, let word of mouth and authenticity compound, then move north. Evidence/assumption: this sequencing logic is a strategic recommendation, not tested against actual regional demand data. Discussion question: within these five states/cities, which one city should carry the pilot launch cost first? Transition: next slide lays out the specific channel-by-channel go-to-market plan for executing this sequencing.">
   <div class="frame">
@@ -600,7 +747,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">Market entry strategy</span>
         <h2 class="t-headline-lg">Own the South. Not India. Not yet.</h2>
       </div>
-      <span class="slug">11 — ENTRY</span>
+      <span class="slug">14 — ENTRY</span>
     </div>
     <div class="reveal fill" style="display:flex; align-items:center; gap:60px;">
       <div style="flex:1;">
@@ -623,11 +770,11 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       </div>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>11<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>14<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 12 — GO TO MARKET
+     SLIDE 15 — GO TO MARKET
      ========================================================= -->
 <section class="slide light" data-notes="Main argument: the go-to-market sequence deliberately moves from low-fixed-cost digital channels toward higher-commitment institutional and export channels, de-risking capital as credibility builds. Evidence/assumption: the 5-phase sequencing is a recommended plan, not a committed timeline with dates. Discussion question: how long should Phase 1 (Digital First) run before triggering Phase 2 modern-retail conversations? Transition: next slide explains why not every channel in this sequence should be treated the same way strategically.">
   <div class="frame">
@@ -636,7 +783,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">Go-to-market</span>
         <h2 class="t-headline-lg">Five phases, low commitment to high commitment</h2>
       </div>
-      <span class="slug">12 — GTM</span>
+      <span class="slug">15 — GTM</span>
     </div>
     <div class="reveal fill" style="display:flex; flex-direction:column; justify-content:center;">
     <div class="flow-row" style="align-items:stretch;">
@@ -651,12 +798,13 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <div class="flow-node" style="align-items:flex-start; text-align:left; border-color:rgba(184,83,46,0.4); background:var(--terracotta-soft);"><span class="n" style="color:var(--terracotta-deep);">PHASE 5</span><span class="label" style="color:var(--terracotta-deep);">Exports</span><span class="sub">Middle East first, then USA, Canada, Australia, Europe</span></div>
     </div>
     </div>
+    <p class="reveal xref" style="flex:0 0 auto; padding-top:18px;">A dated, 36-month version of this sequence follows later in the deck ("Beyond the First 12 Months").</p>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>12<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>15<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 13 — CHANNEL STRATEGY
+     SLIDE 16 — CHANNEL STRATEGY
      ========================================================= -->
 <section class="slide light" data-notes="Main argument: a common mistake is treating every channel as equally important — each channel actually plays one of four distinct jobs (brand, revenue, volume, or margin), and conflating them wastes resources. Evidence/assumption: this channel-to-job mapping is the report's own framework, not a benchmarked industry model. Discussion question: if forced to fund only two of these four channel groups in year one, which two compound the fastest? Transition: next slide moves from channel mechanics to the brand story that has to travel through all of them.">
   <div class="frame">
@@ -665,7 +813,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">Channel strategy</span>
         <h2 class="t-headline-lg">Not every channel plays the same role</h2>
       </div>
-      <span class="slug">13 — CHANNELS</span>
+      <span class="slug">16 — CHANNELS</span>
     </div>
     <div class="reveal fill card-grid grid-cols-4" style="align-content:center;">
       <div class="seg-card"><span class="si">BRAND BUILDING</span><div class="tags" style="margin-top:8px;"><span class="seg-chip">Quick Commerce</span><span class="seg-chip">Amazon</span><span class="seg-chip">Instagram</span><span class="seg-chip">YouTube</span></div></div>
@@ -674,11 +822,11 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <div class="seg-card" style="background:var(--terracotta-soft); border-color:rgba(184,83,46,0.35);"><span class="si" style="color:var(--terracotta-deep);">MARGIN</span><div class="tags" style="margin-top:8px;"><span class="seg-chip">D2C</span><span class="seg-chip">Corporate</span><span class="seg-chip">Exports</span></div></div>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>13<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>16<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 14 — BRAND STRATEGY
+     SLIDE 17 — BRAND STRATEGY
      ========================================================= -->
 <section class="slide dark" data-notes="Main argument: the brand must not present as a technology or convenience company — it should present as a kitchen with a story, because consumers remember stories, not manufacturing process. Evidence/assumption: the brand promise line is the report's proposed copy, not tested with consumers. Discussion question: does 'Ready in 90 Seconds' undercut the premium/authenticity positioning, or reinforce it? Transition: next slide turns this brand promise into an actual phased marketing campaign.">
   <div class="frame" style="justify-content:center;">
@@ -700,11 +848,11 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <p class="t-body" style="color:var(--cream-3); margin-top:24px;">Consumers remember stories. Not technology.</p>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>14<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>17<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 15 — MARKETING CAMPAIGN
+     SLIDE 18 — MARKETING CAMPAIGN
      ========================================================= -->
 <section class="slide light" data-notes="Main argument: the campaign is sequenced to build from skepticism (can packaged food taste homemade?) to proof (taste challenge) to emotional connection (storytelling) to reach (influencers) to retention (community) — each phase earns the next. Evidence/assumption: this is a proposed campaign structure, not a tested media plan with budgets or timelines. Discussion question: which phase is riskiest to get wrong — the taste challenge, given it's a public claim that can fail on camera? Transition: next slide shifts from front-of-house marketing to the back-of-house operating model that has to support all of this.">
   <div class="frame">
@@ -713,7 +861,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">Marketing campaign</span>
         <h2 class="t-headline-lg">From curiosity to community</h2>
       </div>
-      <span class="slug">15 — MARKETING</span>
+      <span class="slug">18 — MARKETING</span>
     </div>
     <div class="reveal fill" style="display:flex; flex-direction:column; justify-content:center;">
     <div class="flow-row" style="align-items:stretch;">
@@ -729,32 +877,125 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
     </div>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>15<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>18<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 16 — OPERATIONAL MODEL
+     SLIDE 19 — OPERATIONAL MODEL
      ========================================================= -->
-<section class="slide light" data-notes="Main argument: the company should own brand, recipes, and the customer relationship — and rent everything else (manufacturing, logistics) until scale justifies vertical integration. Evidence/assumption: 'never build a factory first' is a strategic recommendation to reduce early capital risk, not a claim that contract manufacturing guarantees quality. Discussion question: at what volume or revenue threshold would owning manufacturing actually start to make sense? Transition: next slide turns this operating model into a concrete first 12-month execution plan.">
+<section class="slide light" data-notes="Main argument: the company should own brand, recipes, and the customer relationship — and rent everything else (manufacturing, logistics) until scale justifies vertical integration. Evidence/assumption: 'never build a factory first' is a strategic recommendation to reduce early capital risk, not a claim that contract manufacturing guarantees quality. Discussion question: at what volume or revenue threshold would owning manufacturing actually start to make sense? Transition: next slide details the regulatory and compliance checkpoints that sit on top of this operating model.">
   <div class="frame">
     <div class="topbar reveal">
       <div>
         <span class="t-kicker kicker">Operational model</span>
         <h2 class="t-headline-lg">Own the brand. Rent the rest — for now.</h2>
       </div>
-      <span class="slug">16 — OPERATIONS</span>
+      <span class="slug">19 — OPERATIONS</span>
     </div>
     <div class="reveal fill card-grid grid-cols-3" style="align-content:center;">
       <div class="seg-card"><span class="si">MANUFACTURING</span><h4 style="font-size:22px;">Contract manufacturing</h4><p class="t-body" style="color:var(--ink-3);">Initially. Never build a factory first.</p></div>
       <div class="seg-card"><span class="si">QUALITY</span><h4 style="font-size:22px;">Build your own</h4><div class="tags" style="margin-top:6px;"><span class="seg-chip">R&amp;D Kitchen</span><span class="seg-chip">Recipe Lab</span><span class="seg-chip">Food Testing</span><span class="seg-chip">QA Team</span></div></div>
       <div class="seg-card"><span class="si">DISTRIBUTION</span><h4 style="font-size:22px;">Third-party logistics</h4><p class="t-body" style="color:var(--ink-3);">Own only brand, recipes, and the customer relationship.</p></div>
     </div>
+    <p class="reveal xref" style="flex:0 0 auto; margin-top:16px;">Full regulatory and compliance checkpoints follow on the next slide.</p>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>16<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>19<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 17 — 12-MONTH ROADMAP (1/2)
+     SLIDE 20 — REGULATORY & COMPLIANCE FRAMEWORK  [NEW]
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: commercial and export credibility depends on a specific, checkable set of regulatory milestones — this isn't generic 'we'll be compliant' hand-waving, it's the actual license/certification/test list the business plan commits to. Evidence/assumption: these are the compliance requirements the business plan identifies as necessary; none are confirmed as obtained yet — treat this as a checklist to execute against, not a claim of current certification. Discussion question: which single checkpoint here — FSSAI, US FDA, or EFSA — is the longest lead-time item that should be started first regardless of launch market? Transition: next slide moves from compliance cost to the unit economics it sits inside.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Regulatory &amp; compliance framework</span>
+        <h2 class="t-headline-lg">Built for domestic and export credibility from day one</h2>
+      </div>
+      <span class="slug">20 — REGULATORY</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-4" style="padding-top:6px;">
+      <div class="seg-card"><span class="si">LICENSING &amp; REGISTRATION</span><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">FSSAI Central License (E-com/Q-Com &amp; Meat Processing, Cat. 13 &amp; 08)</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">US FDA Facility Registration &amp; Prior Notice Clearances</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Local Municipal Trade License / Factory NOC</div></div></div></div>
+      <div class="seg-card"><span class="si">FACILITY &amp; MFG. QUALITY</span><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">HACCP Plan &amp; GMP Certification</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">F0 Lethality Validation (Thermal Sterility Certificate)</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">EU Food Safety &amp; EFSA Regulatory Audits</div></div></div></div>
+      <div class="seg-card"><span class="si">SCIENTIFIC LAB TESTING</span><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">NABL Accredited testing &amp; challenge testing</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Microbial pathogen testing (Clostridium, Salmonella, Listeria)</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Commercial sterility test (IS 2168 / retort standard)</div></div></div></div>
+      <div class="seg-card"><span class="si">LABELING &amp; CLEARANCES</span><div class="index-list" style="margin-top:4px;"><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">NABL nutritional panel &amp; allergen verification</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">US FDA &amp; EU compliant multi-language export packaging</div></div><div class="index-row" style="padding:8px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Water potability test (IS 10500 standard)</div></div></div></div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>20<span class="dot">·</span>30</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 21 — SKU-LEVEL MARGIN ENGINEERING  [NEW]
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the unit economics are engineered top-down from a fixed MRP band, with cost control across ingredients, thermal processing, and logistics leaving a healthy 15-25% net contribution margin after channel fees. Evidence/assumption: these are the business plan's own SKU-level cost assumptions, not audited actuals from a running operation — they're planning targets to validate during pilot production. Discussion question: which single line item — COGS, processing, or channel fees — has the most realistic room to compress as volume scales? Transition: next slide shows what these margins compound into over a 3-year financial plan.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Financial roadmap &amp; unit economics</span>
+        <h2 class="t-headline-lg">SKU-level margin engineering</h2>
+      </div>
+      <span class="tag">Business plan assumptions</span>
+    </div>
+    <div class="reveal fill index-list" style="align-content:center;">
+      <div class="index-row"><span class="num">·</span><div><div class="head">Retail Price</div><div class="sub">MRP ₹120 &ndash; ₹250</div></div></div>
+      <div class="index-row"><span class="num">·</span><div><div class="head">COGS — 30&ndash;40%</div><div class="sub">Ingredients + retort/vacuum pouches</div></div></div>
+      <div class="index-row"><span class="num">·</span><div><div class="head">Processing &amp; Thermal Sterilization — 15&ndash;20%</div></div></div>
+      <div class="index-row"><span class="num">·</span><div><div class="head">Logistics &amp; Warehousing — 10%</div></div></div>
+      <div class="index-row"><span class="num">·</span><div><div class="head">Brand Gross Margin — 40&ndash;50%</div></div></div>
+      <div class="index-row"><span class="num">·</span><div><div class="head">Channel Fees &amp; Allowances — 20&ndash;35%</div><div class="sub">Distributors, retailers, quick commerce</div></div></div>
+      <div class="index-row" style="border-bottom:none;"><span class="num">·</span><div><div class="head" style="color:var(--terracotta-deep);">Net Contribution Margin — 15&ndash;25%</div></div></div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>21<span class="dot">·</span>30</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 22 — 3-YEAR FINANCIAL PROJECTIONS  [NEW]
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the business plan projects a path from ₹9 Cr to ₹55 Cr gross revenue over three years, with gross margin improving from 48% to 56% and EBITDA turning positive around mid-Year-2. Evidence/assumption: these are the business plan's own financial projections, not audited results or third-party validated forecasts — present them explicitly as the plan's targets. Discussion question: is the jump from Year 1 to Year 2 (₹9 Cr to ₹22 Cr, roughly 2.4x) realistic given the GTM phases described, or front-loaded? Transition: next slide returns to the operational roadmap that would have to execute flawlessly to hit these numbers.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Financial roadmap &amp; unit economics</span>
+        <h2 class="t-headline-lg">Projected scale, Years 1&ndash;3</h2>
+      </div>
+      <span class="tag">Business plan projections — not audited</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-3" style="align-content:center;">
+      <div class="seg-card">
+        <span class="si">YEAR 1 — FOUNDATION</span>
+        <h4>₹9.0 Cr</h4>
+        <div class="index-list" style="margin-top:4px;">
+          <div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Gross margin: 48%</div></div>
+          <div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Channel allowances: ₹1.8 Cr (20%)</div></div>
+          <div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">EBITDA margin: ~5.5% (break-even mid-Y2)</div></div>
+        </div>
+      </div>
+      <div class="seg-card">
+        <span class="si">YEAR 2 — EXPANSION</span>
+        <h4>₹22.0 Cr</h4>
+        <div class="index-list" style="margin-top:4px;">
+          <div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Gross margin: 52%</div></div>
+          <div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">Channel allowances: ₹4.8 Cr (22%)</div></div>
+          <div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500;">EBITDA margin: ~12.0%</div></div>
+        </div>
+      </div>
+      <div class="seg-card" style="background:var(--terracotta-soft); border-color:rgba(184,83,46,0.35);">
+        <span class="si" style="color:var(--terracotta-deep);">YEAR 3 — SCALE</span>
+        <h4 style="color:var(--terracotta-deep);">₹55.0 Cr</h4>
+        <div class="index-list" style="margin-top:4px;">
+          <div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500; color:var(--terracotta-deep);">Gross margin: 56%</div></div>
+          <div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500; color:var(--terracotta-deep);">Channel allowances: ₹12.1 Cr (22%)</div></div>
+          <div class="index-row" style="padding:6px 0; border:none;"><span class="num">·</span><div class="head" style="font-size:14px; font-weight:500; color:var(--terracotta-deep);">EBITDA margin: ~16.5%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>22<span class="dot">·</span>30</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 23 — 12-MONTH ROADMAP (1/2)
      ========================================================= -->
 <section class="slide light" data-notes="Main argument: the first four months are entirely about de-risking — validating demand and finalizing product before spending on launch marketing. Evidence/assumption: the KPIs and deliverables listed are the report's planning targets, not results already achieved. Discussion question: what would have to be true in the Months 1-2 taste panels for us to proceed to Months 3-4 with confidence? Transition: next slide covers the controlled launch and scale phases that follow this foundation.">
   <div class="frame">
@@ -763,7 +1004,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">First 12-month execution roadmap</span>
         <h2 class="t-headline-lg">Months 1&ndash;4: Foundation, then product &amp; compliance</h2>
       </div>
-      <span class="slug">17 — ROADMAP 1/2</span>
+      <span class="slug">23 — ROADMAP 1/2</span>
     </div>
     <div class="reveal fill split" style="align-items:stretch;">
       <div class="card" style="padding:32px;">
@@ -792,20 +1033,20 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       </div>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>17<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>23<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 18 — 12-MONTH ROADMAP (2/2)
+     SLIDE 24 — 12-MONTH ROADMAP (2/2)
      ========================================================= -->
-<section class="slide light" data-notes="Main argument: launch, scale, and institutional readiness are sequenced across the back eight months, with explicit success metrics at each stage rather than an open-ended rollout. Evidence/assumption: these are planning KPIs (trial customers, repeat purchase, outlet counts), not achieved results. Discussion question: which single KPI on this slide is the best early warning signal if the plan is off track? Transition: next slide zooms out from the 12-month plan to the long-term structural recommendation for the business.">
+<section class="slide light" data-notes="Main argument: launch, scale, and institutional readiness are sequenced across the back eight months, with explicit success metrics at each stage rather than an open-ended rollout. Evidence/assumption: these are planning KPIs (trial customers, repeat purchase, outlet counts), not achieved results. Discussion question: which single KPI on this slide is the best early warning signal if the plan is off track? Transition: next slide extends this 12-month plan into the business plan's full 36-month phased roadmap.">
   <div class="frame">
     <div class="topbar reveal">
       <div>
         <span class="t-kicker kicker">First 12-month execution roadmap</span>
         <h2 class="t-headline-lg">Months 5&ndash;12: Launch, scale, institutional readiness</h2>
       </div>
-      <span class="slug">18 — ROADMAP 2/2</span>
+      <span class="slug">24 — ROADMAP 2/2</span>
     </div>
     <div class="reveal fill card-grid grid-cols-3" style="align-content:center;">
       <div class="seg-card">
@@ -824,12 +1065,68 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <div class="tags"><span class="seg-chip">6&ndash;8 cities</span><span class="seg-chip">Export pilot shipments</span><span class="seg-chip">2&ndash;3 institutional verticals</span></div>
       </div>
     </div>
+    <p class="reveal xref" style="flex:0 0 auto; margin-top:16px;">This 12-month plan is the foundation phase of a longer 36-month roadmap — see next.</p>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>18<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>24<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 19 — STRATEGIC RECOMMENDATION
+     SLIDE 25 — PHASED GTM & EXECUTION ROADMAP, 36 MONTHS  [NEW]
+     ========================================================= -->
+<section class="slide dark" data-notes="Main argument: beyond the first 12 months, the business plan extends into an 18-month regional/GCC scaling phase and an 18-month global expansion phase, with revenue milestones (₹10-15 Cr run-rate, then ₹50-75 Cr) that tie directly to the 3-year financial projections shown earlier. Evidence/assumption: these are the business plan's planning milestones, not achieved results — the phase boundaries (M0-6/M6-18/M18-36) are a different granularity than the earlier 5-phase Go-to-Market slide, describing the same expansion story with specific dates and geographies attached. Discussion question: does committing to a dedicated automated retort facility by Month 18-36 lock in capital too early, or is it necessary to hit the Year 3 revenue target? Transition: next slide gets specific about the near-term milestones and owners underneath Phase 1 of this roadmap.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Phased GTM &amp; execution roadmap</span>
+        <h2 class="t-headline-lg">Beyond the first 12 months</h2>
+      </div>
+      <span class="slug">25 — 36-MONTH ROADMAP</span>
+    </div>
+    <div class="reveal fill card-grid grid-cols-3" style="align-content:center;">
+      <div class="seg-card">
+        <span class="si">PHASE 1 · M0&ndash;6</span><h4 style="font-size:20px;">Foundation &amp; Soft Launch</h4>
+        <p class="t-body" style="color:var(--cream-3); font-size:12.5px;">Quick Commerce (Blinkit, Zepto, Instamart), Amazon India, D2C Website. Recipe validation, thermal retort lethality (F0 ≥ 12), sampling across Kerala (Trivandrum/Kochi/Calicut), Chennai, Hyderabad &amp; Bengaluru.</p>
+        <div class="tags"><span class="seg-chip">5,000 trial customers</span><span class="seg-chip">&gt;20% repeat</span><span class="seg-chip">≥4.3/5 rating</span></div>
+      </div>
+      <div class="seg-card">
+        <span class="si">PHASE 2 · M6&ndash;18</span><h4 style="font-size:20px;">Regional Scaling &amp; GCC Entry</h4>
+        <p class="t-body" style="color:var(--cream-3); font-size:12.5px;">Modern Trade (Lulu, Reliance, Nature's Basket), GT Distributors, GCC Distributors, US Ethnic Chains (Patel Brothers, Subzi Mandi). GCC import licensing (UAE, Qatar, Saudi, Kuwait); US FDA clearances.</p>
+        <div class="tags"><span class="seg-chip">₹10&ndash;15 Cr revenue run-rate</span><span class="seg-chip">300+ MT outlets</span></div>
+      </div>
+      <div class="seg-card" style="background:var(--espresso-700); border-color:rgba(201,150,43,0.4);">
+        <span class="si" style="color:var(--gold);">PHASE 3 · M18&ndash;36</span><h4 style="font-size:20px; color:var(--gold);">Global Expansion &amp; Scale</h4>
+        <p class="t-body" style="color:var(--cream-2); font-size:12.5px;">European &amp; UK Ethnic Grocery Chains, North American Distributors, B2B Aviation &amp; Institutional Catering. Dedicated automated retort facility in Kerala/Karnataka; EU/EFSA compliance.</p>
+        <div class="tags"><span class="seg-chip">₹50&ndash;75 Cr annual revenue</span><span class="seg-chip">20&ndash;25% export contribution</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>25<span class="dot">·</span>30</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 26 — STRATEGIC MILESTONES  [NEW]
+     ========================================================= -->
+<section class="slide light" data-notes="Main argument: the first five months of Phase 1 have specific, dated, owned milestones — this is the operational detail that either proves or disproves the roadmap's credibility in the near term. Evidence/assumption: these are the business plan's planning targets with named responsible teams, not completed milestones. Discussion question: which of these four milestones, if missed, would most threaten the Month 5-6 controlled launch described earlier in the deck? Transition: next slide zooms back out to the strategic recommendation for how to structure the whole business.">
+  <div class="frame">
+    <div class="topbar reveal">
+      <div>
+        <span class="t-kicker kicker">Strategic milestones</span>
+        <h2 class="t-headline-lg">Near-term milestones, with owners</h2>
+      </div>
+      <span class="slug">26 — MILESTONES</span>
+    </div>
+    <div class="reveal fill index-list" style="align-content:center;">
+      <div class="index-row"><span class="num">M2</span><div><div class="head">Final Product Sign-Off &amp; Lab Approval</div><div class="sub">R&amp;D &amp; Regulatory Team</div></div></div>
+      <div class="index-row"><span class="num">M3</span><div><div class="head">FSSAI Central License &amp; Testing Complete</div><div class="sub">Quality Assurance</div></div></div>
+      <div class="index-row"><span class="num">M4</span><div><div class="head">Quick-Commerce Vendor Onboarding</div><div class="sub">Sales &amp; Channel Operations</div></div></div>
+      <div class="index-row" style="border-bottom:none;"><span class="num">M5</span><div><div class="head">Commercial Soft Launch (BLR, Kochi &amp; Central Kerala)</div><div class="sub">Brand &amp; Marketing Team</div></div></div>
+    </div>
+  </div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>26<span class="dot">·</span>30</div></div>
+</section>
+
+<!-- =========================================================
+     SLIDE 27 — STRATEGIC RECOMMENDATION
      ========================================================= -->
 <section class="slide dark" data-notes="Main argument: the business should not be built as a single conventional FMCG line but as a multi-brand platform with four connected divisions, each with a different margin and go-to-market profile. Evidence/assumption: this four-division structure is the report's proposed architecture, not an existing organizational reality. Discussion question: should all four divisions be built in parallel, or does Division 1 need to prove out fully before funding Division 4? Transition: next slide gives the long-term scale ambition this platform structure is meant to support.">
   <div class="frame">
@@ -838,7 +1135,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
         <span class="t-kicker kicker">Strategic recommendation</span>
         <h2 class="t-headline-lg">A multi-brand premium food platform, not a conventional FMCG line</h2>
       </div>
-      <span class="slug">19 — STRUCTURE</span>
+      <span class="slug">27 — STRUCTURE</span>
     </div>
     <div class="reveal fill card-grid grid-cols-4" style="align-content:center;">
       <div class="seg-card"><span class="si">DIVISION 1</span><h4 style="font-size:21px;">Regional Ready-to-Eat Meals</h4><div class="tags"><span class="seg-chip">Kerala</span><span class="seg-chip">Tamil Nadu</span><span class="seg-chip">Andhra</span><span class="seg-chip">Chettinad</span><span class="seg-chip">Mangalorean</span></div></div>
@@ -847,13 +1144,13 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <div class="seg-card"><span class="si">DIVISION 4</span><h4 style="font-size:21px;">Global Ethnic Foods</h4><div class="tags"><span class="seg-chip">Export-focused products</span><span class="seg-chip">NRI meal solutions</span><span class="seg-chip">Travel packs</span></div></div>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>19<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>27<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 20 — LONG-TERM VIEW
+     SLIDE 28 — LONG-TERM VIEW
      ========================================================= -->
-<section class="slide dark" data-notes="Main argument: the 5-10 year outcome — a ₹500-1,000 crore branded food company — is achievable but conditional on sustained investment in quality, brand, distribution, and manufacturing, and on refusing to compete on price. Evidence/assumption: the ₹500-1,000cr figure is the report's own long-term ambition framed as conditional ('would require'), not a projection with a stated methodology — present it as a vision, not a forecast. Discussion question: what would be the clearest signal, 24 months in, that we're actually on this trajectory versus building a smaller regional brand? Transition: next slide synthesizes the entire report into one summary view.">
+<section class="slide dark" data-notes="Main argument: the 5-10 year outcome — a ₹500-1,000 crore branded food company — is achievable but conditional on sustained investment in quality, brand, distribution, and manufacturing, and on refusing to compete on price. Evidence/assumption: the ₹500-1,000cr figure is the report's own long-term ambition framed as conditional ('would require'), not a projection with a stated methodology — present it as a vision, not a forecast; it sits well beyond the ₹55 Cr Year-3 target in the financial projections, implying continued growth after Year 3 that the business plan doesn't itself model in detail. Discussion question: what would be the clearest signal, 24 months in, that we're actually on this trajectory versus building a smaller regional brand? Transition: next slide synthesizes the entire report into one summary view.">
   <div class="frame" style="justify-content:center;">
     <span class="reveal t-kicker" style="margin-bottom:24px;">Long-term view — 5 to 10 years</span>
     <p class="reveal pull-quote" style="font-size:52px; max-width:1500px; margin-bottom:36px;">With disciplined execution, this can become a <span class="accent">₹500&ndash;1,000 crore</span> branded food company.</p>
@@ -862,20 +1159,20 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <p class="t-lede" style="color:var(--gold); margin:0;">For maximum probability of success: compete on <span style="color:var(--cream);">authenticity, superior taste, premium quality, convenience, and regional culinary expertise</span> — never on price.</p>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>20<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>28<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 21 — SUMMARY
+     SLIDE 29 — SUMMARY
      ========================================================= -->
-<section class="slide light" data-notes="Main argument: the whole report compresses into one sentence — build a regional cuisine platform starting with Kerala, sequenced South-first, structured as four divisions, judged against the mother's-kitchen benchmark rather than other RTE brands. Evidence/assumption: this is a synthesis slide, not new information — cross-check it against the earlier detail slides before using it standalone. Discussion question: if someone only reads this one slide, what's the one thing they'd need to also read in full before making a capital decision? Transition: closing slide.">
+<section class="slide light" data-notes="Main argument: the whole report compresses into one sentence — build a regional cuisine platform starting with Kerala, sequenced South-first, structured as four divisions, backed by real unit economics and regulatory readiness, judged against the mother's-kitchen benchmark rather than other RTE brands. Evidence/assumption: this is a synthesis slide, not new information — cross-check it against the earlier detail slides before using it standalone. Discussion question: if someone only reads this one slide, what's the one thing they'd need to also read in full before making a capital decision? Transition: closing slide.">
   <div class="frame">
     <div class="topbar reveal">
       <div>
         <span class="t-kicker kicker">Summary</span>
         <h2 class="t-headline-lg">The whole thesis, one slide</h2>
       </div>
-      <span class="slug">21 — SUMMARY</span>
+      <span class="slug">29 — SUMMARY</span>
     </div>
     <div class="reveal fill index-list" style="align-content:center;">
       <div class="index-row"><span class="num">01</span><div><div class="head">Not Ready-to-Eat — a Premium Regional Food Company</div><div class="sub">Built around Time, Trust, Authenticity, Health, Premium Experience, Consistency.</div></div></div>
@@ -883,14 +1180,16 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <div class="index-row"><span class="num">03</span><div><div class="head">12 Hero Products, not 60 SKUs — plus a jerky bet</div><div class="sub">Discipline in the line-up; a near-uncontested next category in high-protein snacks.</div></div></div>
       <div class="index-row"><span class="num">04</span><div><div class="head">Own the South first, then go north, then export</div><div class="sub">Kerala → Tamil Nadu → Karnataka → Telangana → Hyderabad → India → GCC → the world.</div></div></div>
       <div class="index-row"><span class="num">05</span><div><div class="head">Structure as a 4-division platform, not one FMCG brand</div><div class="sub">Regional RTE, High-Protein Foods, Ready-to-Cook, Global Ethnic Foods.</div></div></div>
-      <div class="index-row" style="border-bottom:none;"><span class="num">06</span><div><div class="head">Win on authenticity, not price</div><div class="sub">The benchmark is "can this replace my mother's food?" — not another RTE brand.</div></div></div>
+      <div class="index-row"><span class="num">06</span><div><div class="head">Win on authenticity, not price</div><div class="sub">The benchmark is "can this replace my mother's food?" — not another RTE brand.</div></div></div>
+      <div class="index-row"><span class="num">07</span><div><div class="head">Backed by real unit economics and a 3-year financial plan</div><div class="sub">MRP ₹120&ndash;250, ~15&ndash;25% net contribution margin, a path to ₹55 Cr revenue by Year 3.</div></div></div>
+      <div class="index-row" style="border-bottom:none;"><span class="num">08</span><div><div class="head">Regulatory-ready from day one</div><div class="sub">FSSAI, US FDA, HACCP, EFSA, and NABL testing built into the launch phase, not bolted on later.</div></div></div>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>21<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>29<span class="dot">·</span>30</div></div>
 </section>
 
 <!-- =========================================================
-     SLIDE 22 — CLOSING
+     SLIDE 30 — CLOSING
      ========================================================= -->
 <section class="slide dark" data-notes="Main argument: this closing slide restates the report's central identity claim — the company should be remembered as the House of Regional Indian Cuisine, not a Ready-to-Eat vendor — and opens the floor for discussion. Evidence/assumption: this is a closing framing device, not new information. Discussion question: what would you need to see in the next 90 days to move from 'interesting report' to 'funded pilot'? Transition: end of deck — open discussion.">
   <div class="frame" style="justify-content:center; align-items:flex-end; text-align:right;">
@@ -901,7 +1200,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
       <p class="t-body" style="color:var(--cream-2);">Discussion: market validation, capital requirements, and the right first city to launch in.</p>
     </div>
   </div>
-  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>22<span class="dot">·</span>22</div></div>
+  <div class="footer-row"><div class="wordmark"><span class="sq"></span>House of Regional Indian Cuisine</div><div>30<span class="dot">·</span>30</div></div>
 </section>
 
 </main>
@@ -915,7 +1214,7 @@ img, video, canvas, svg { max-width:100%; max-height:100%; }
 
 <!-- Deck controls -->
 <div class="deck-controls">
-  <span id="slideCounter">01 / 22</span>
+  <span id="slideCounter">01 / 30</span>
   <span class="sep">|</span>
   <button id="prevBtn">← PREV</button>
   <button id="nextBtn">NEXT →</button>
@@ -1011,8 +1310,8 @@ class SlidePresentation {
 class InlineEditor {
   constructor() {
     this.isActive = false;
-    this.storageKey = 'india-rte-deck-edits';
-    this.editableSelector = 'h1,h2,p,span.head,div.head,div.sub,h4,span.label,div.note';
+    this.storageKey = 'india-rte-deck-edits-v2';
+    this.editableSelector = 'h1,h2,p,span.head,div.head,div.sub,h4,span.label,div.note,span.pr-label,span.pr-value,span.pr-claim';
     this.loadEdits();
     this.bindHotzone();
   }
